@@ -22,7 +22,7 @@ func (app *application) CreateReview(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&review)
 	if err != nil {
-		// TODO: log error -- make some app level logger for this
+		app.errLog.Println(err)
 		response.WriteErrorResponse(w, "Invalid JSON")
 		return
 	}

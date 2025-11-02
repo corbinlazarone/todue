@@ -15,19 +15,24 @@ import (
 
 type application struct {
 	reviews *models.ReviewModel
+	infoLog *log.Logger
+	errLog  *log.Logger
 }
 
 func main() {
 
+	infoLog := log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	errLog := log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+
 	// db url is auto injected by docker-compose
 	dbUrl := os.Getenv("DB_CONN")
 	if dbUrl == "" {
-		log.Fatal("DB_CONN env var not set")
+		errLog.Fatal("DB_CONN env var not set")
 	}
 
 	dbPool, err := initDB(dbUrl)
 	if err != nil {
-		log.Fatal(err)
+		errLog.Fatal(err)
 	}
 
 	defer dbPool.Close()
@@ -35,20 +40,21 @@ func main() {
 	// create sql db connection for goose migrations
 	sqlDB, err := sql.Open("pgx", dbUrl)
 	if err != nil {
-		log.Fatal(err)
+		errLog.Fatal(err)
 	}
 	defer sqlDB.Close()
 
 	err = migrations.RunMigrations(sqlDB)
 	if err != nil {
-		log.Fatal("Failed to load migrations", err)
+		errLog.Fatal("Failed to load migrations", err)
 	}
 
-	// so we can share our CRUD operations across our app
 	app := &application{
 		reviews: &models.ReviewModel{
 			DB: dbPool,
 		},
+		infoLog: infoLog,
+		errLog:  errLog,
 	}
 
 	srv := &http.Server{
@@ -56,10 +62,10 @@ func main() {
 		Handler: app.routes(),
 	}
 
-	log.Println("Server running on port 4000...")
+	infoLog.Println("Server running on port 4000...")
 	err = srv.ListenAndServe()
 	if err != nil {
-		log.Fatal(err)
+		errLog.Fatal(err)
 	}
 }
 

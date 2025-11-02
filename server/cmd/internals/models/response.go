@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -28,7 +29,7 @@ func (rep *Response) writeJSON(w http.ResponseWriter, statusCode int) {
 	err := json.NewEncoder(w).Encode(rep)
 
 	if err != nil {
-		// TODO: log error -- make some app level logger for this
+		log.Println(err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
