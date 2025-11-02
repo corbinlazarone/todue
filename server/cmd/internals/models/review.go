@@ -20,3 +20,7 @@ type Review struct {
 type ReviewModel struct {
 	DB *pgxpool.Pool
 }
+
+func (*ReviewModel) CreateReview(review *Review) error {
+	return nil
+}
