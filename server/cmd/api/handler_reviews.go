@@ -8,11 +8,6 @@ import (
 	"github.com/corbinlazarone/cmovie/cmd/internals/validator"
 )
 
-func (app *application) health(w http.ResponseWriter, r *http.Request) {
-	var response models.Response
-	response.WriteSuccessResponse(w, "cmovie server is running..", http.StatusOK)
-}
-
 func (app *application) CreateReview(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close() // close the request body when the function returns
 
