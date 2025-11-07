@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/corbinlazarone/cmovie/cmd/internals/models"
@@ -10,7 +9,8 @@ import (
 )
 
 func (app *application) health(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "cmovie server is running!")
+	var response models.Response
+	response.WriteSuccessResponse(w, "cmovie server is running..", http.StatusOK)
 }
 
 func (app *application) CreateReview(w http.ResponseWriter, r *http.Request) {
@@ -49,6 +49,8 @@ func (app *application) CreateReview(w http.ResponseWriter, r *http.Request) {
 		response.WriteErrorResponse(w, v.FieldErrors["rating"])
 		return
 	}
+
+	// TODO: write review to db and return id
 
 	response.WriteSuccessResponse(w, "Review created successfully!", http.StatusCreated)
 }
