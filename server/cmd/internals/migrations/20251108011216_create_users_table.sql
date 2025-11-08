@@ -1,9 +1,9 @@
 -- +goose Up
 -- +goose StatementBegin
-ALTER TABLE reviews DROP COLUMN image_url;
+SELECT 'up SQL query';
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-ALTER TABLE reviews ADD COLUMN image_url TEXT;
+SELECT 'down SQL query';
 -- +goose StatementEnd

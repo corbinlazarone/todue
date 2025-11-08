@@ -8,7 +8,7 @@ import (
 )
 
 // NOTE: embeds migrations in to executable binary when we build go
-// --- pretyy coool
+// --- prettyy coool
 
 //go:embed *.sql
 var embedMigrationFS embed.FS
