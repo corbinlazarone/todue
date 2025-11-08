@@ -17,10 +17,10 @@ func (rep *Response) WriteSuccessResponse(w http.ResponseWriter, message string,
 	rep.writeJSON(w, statusCode)
 }
 
-func (rep *Response) WriteErrorResponse(w http.ResponseWriter, message string) {
+func (rep *Response) WriteErrorResponse(w http.ResponseWriter, statusCode int, message string) {
 	rep.Type = "error"
 	rep.Message = message
-	rep.writeJSON(w, http.StatusBadRequest)
+	rep.writeJSON(w, statusCode)
 }
 
 func (rep *Response) writeJSON(w http.ResponseWriter, statusCode int) {
