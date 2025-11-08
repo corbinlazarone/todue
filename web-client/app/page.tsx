@@ -1,3 +1,5 @@
+import { GoogleLoginButton } from "@/features/auth";
+
 export default function Page() {
-  return <div>cmovie client</div>;
+  return <GoogleLoginButton />;
 }
