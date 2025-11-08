@@ -8,5 +8,5 @@ import (
 
 func (app *application) health(w http.ResponseWriter, r *http.Request) {
 	var response models.Response
-	response.WriteSuccessResponse(w, "cmovie server is running..", http.StatusOK)
+	response.WriteSuccessResponse(w, "Todue server is running..", http.StatusOK)
 }

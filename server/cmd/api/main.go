@@ -8,13 +8,11 @@ import (
 	"os"
 
 	"github.com/corbinlazarone/cmovie/cmd/internals/migrations"
-	"github.com/corbinlazarone/cmovie/cmd/internals/models"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib" // to load the pgx driver for database/sql
 )
 
 type application struct {
-	reviews *models.ReviewModel
 	infoLog *log.Logger
 	errLog  *log.Logger
 }
@@ -50,9 +48,6 @@ func main() {
 	}
 
 	app := &application{
-		reviews: &models.ReviewModel{
-			DB: dbPool,
-		},
 		infoLog: infoLog,
 		errLog:  errLog,
 	}
