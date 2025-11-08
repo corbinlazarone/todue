@@ -1,4 +1,4 @@
-package validator
+package auth
 
 type GoogleClaims struct {
 	Email         string `json:"email"`
@@ -7,6 +7,6 @@ type GoogleClaims struct {
 	LastName      string `json:"family_name"`
 }
 
-func validateGoogleJWT(token string) (GoogleClaims, error) {
+func ValidateGoogleJWT(token string) (GoogleClaims, error) {
 	return GoogleClaims{}, nil
 }
