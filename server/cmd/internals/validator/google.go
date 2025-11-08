@@ -1,4 +1,4 @@
-package models
+package validator
 
 type GoogleClaims struct {
 	Email         string `json:"email"`
