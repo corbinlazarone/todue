@@ -1,6 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+	"os"
+)
 
 // add secure headers to all incoming request
 func secureHeaders(next http.Handler) http.Handler {
@@ -18,5 +22,29 @@ func secureHeaders(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 
 		// NOTE: Any code here will execute on the way back up the chain.
+	})
+}
+
+// enableCORS adds CORS headers to allow requests from the Next.js client
+func enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		allowedOrigin := os.Getenv("CORS_ALLOWED_ORIGIN")
+		if allowedOrigin == "" {
+			log.Fatal("CORS_ALLOWED_ORIGIN env var not set")
+		}
+
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+		// Handle preflight OPTIONS request
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	})
 }

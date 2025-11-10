@@ -103,15 +103,15 @@ db-shell:
 # Migration Operations (using goose)
 migrate-up:
 	@echo "Running migrations..."
-	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2-)" up
+	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2- | sed 's/@db:/@localhost:/')" up
 
 migrate-down:
 	@echo "Rolling back last migration..."
-	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2-)" down
+	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2- | sed 's/@db:/@localhost:/')" down
 
 migrate-status:
 	@echo "Migration status:"
-	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2-)" status
+	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2- | sed 's/@db:/@localhost:/')" status
 
 # Cleanup
 clean:

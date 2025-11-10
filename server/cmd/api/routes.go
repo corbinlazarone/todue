@@ -14,7 +14,7 @@ func (app *application) routes() http.Handler {
 	// auth routes
 	router.Handler(http.MethodPost, "/auth/login", http.HandlerFunc(app.loginHandler))
 
-	std := alice.New(secureHeaders)
+	std := alice.New(enableCORS, secureHeaders)
 
 	return std.Then(router)
 }

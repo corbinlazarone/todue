@@ -1,6 +1,7 @@
 "use client";
 
 import { GoogleLogin } from "@react-oauth/google";
+import { login } from "../api/login";
 
 export function GoogleLoginButton() {
   return (
@@ -8,7 +9,7 @@ export function GoogleLoginButton() {
       <GoogleLogin
         onSuccess={(credentialResponse) => {
           const jwt = credentialResponse.credential;
-          // TODO: send to backend to validate
+          login(jwt);
         }}
         onError={() => {
           console.log("Login Failed");

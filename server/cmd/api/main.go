@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/corbinlazarone/cmovie/cmd/internals/migrations"
+	"github.com/corbinlazarone/cmovie/cmd/internals/models"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib" // to load the pgx driver for database/sql
 )
@@ -15,6 +16,7 @@ import (
 type application struct {
 	infoLog *log.Logger
 	errLog  *log.Logger
+	users   *models.UserModel
 }
 
 func main() {
@@ -50,6 +52,7 @@ func main() {
 	app := &application{
 		infoLog: infoLog,
 		errLog:  errLog,
+		users:   &models.UserModel{DB: dbPool},
 	}
 
 	srv := &http.Server{

@@ -14,6 +14,7 @@ import (
 )
 
 type GoogleClaims struct {
+	Sub           string `json:"sub"` // Google's unique user ID
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
 	FirstName     string `json:"given_name"`
