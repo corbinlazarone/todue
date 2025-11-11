@@ -1,6 +1,6 @@
 services:
   web-client: 
-    container_name: cmovie-web-client
+    container_name: todue-web-client
     build:
       context: ./web-client
       dockerfile: Dockerfile
@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
 
   server:
-    container_name: cmovie-server
+    container_name: todue-server
     build:
       context: ./server
       dockerfile: Dockerfile

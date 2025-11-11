@@ -1,15 +1,23 @@
 "use client";
 
 import { GoogleLogin } from "@react-oauth/google";
-import { login } from "../api/login";
+import { login, logout } from "../api/actions";
+import { useRouter } from "next/navigation";
 
 export function GoogleLoginButton() {
+  const router = useRouter();
+
   return (
     <div>
       <GoogleLogin
-        onSuccess={(credentialResponse) => {
+        onSuccess={async (credentialResponse) => {
           const jwt = credentialResponse.credential;
-          login(jwt);
+          try {
+            await login(jwt);
+            router.push("/dashboard");
+          } catch (error) {
+            console.error("Login error:", error);
+          }
         }}
         onError={() => {
           console.log("Login Failed");
@@ -17,4 +25,8 @@ export function GoogleLoginButton() {
       />
     </div>
   );
+}
+
+export function LogoutButton() {
+  return <button onClick={async () => await logout()}>Logout</button>;
 }
