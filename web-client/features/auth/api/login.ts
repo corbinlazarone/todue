@@ -1,14 +1,10 @@
 "use server";
 
 export async function login(googleJWT: string | undefined) {
-  if (!googleJWT) {
-    throw new Error("Google JWT undefined");
-  }
-
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  if (!apiUrl) {
-    throw new Error("API URL not set");
+  if (!googleJWT) {
+    throw new Error("Google JWT undefined");
   }
 
   const rep = await fetch(`${apiUrl}/auth/login`, {
