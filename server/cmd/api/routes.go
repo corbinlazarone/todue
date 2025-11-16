@@ -11,8 +11,10 @@ func (app *application) routes() http.Handler {
 	router := httprouter.New()
 	router.Handler(http.MethodGet, "/", http.HandlerFunc(app.health))
 
+	limter := alice.New(rateLimter)
+
 	// auth routes
-	router.Handler(http.MethodPost, "/auth/login", http.HandlerFunc(app.loginHandler))
+	router.Handler(http.MethodPost, "/auth/login", limter.ThenFunc(app.loginHandler))
 
 	std := alice.New(enableCORS, secureHeaders)
 

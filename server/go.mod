@@ -1,6 +1,6 @@
 module github.com/corbinlazarone/cmovie
 
-go 1.23.12
+go 1.24.0
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.3.0
@@ -8,6 +8,7 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/justinas/alice v1.2.0
 	github.com/pressly/goose/v3 v3.26.0
+	golang.org/x/time v0.14.0
 )
 
 require (
