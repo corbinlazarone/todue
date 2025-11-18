@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/corbinlazarone/cmovie/cmd/internals/anthropic"
 	"github.com/corbinlazarone/cmovie/cmd/internals/migrations"
 	"github.com/corbinlazarone/cmovie/cmd/internals/models"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -14,9 +15,10 @@ import (
 )
 
 type application struct {
-	infoLog *log.Logger
-	errLog  *log.Logger
-	users   *models.UserModel
+	infoLog         *log.Logger
+	errLog          *log.Logger
+	users           *models.UserModel
+	anthropicClient *anthropic.Client
 }
 
 func main() {
@@ -49,10 +51,18 @@ func main() {
 		errLog.Fatal("Failed to load migrations", err)
 	}
 
+	// create anthropic client
+	apiKey := os.Getenv("ANTHROPIC_API_KEY")
+	if apiKey == "" {
+		errLog.Fatal("ANTHROPIC_API_KEY env var not set")
+	}
+	anthropicClient := anthropic.NewClient(apiKey)
+
 	app := &application{
-		infoLog: infoLog,
-		errLog:  errLog,
-		users:   &models.UserModel{DB: dbPool},
+		infoLog:         infoLog,
+		errLog:          errLog,
+		users:           &models.UserModel{DB: dbPool},
+		anthropicClient: anthropicClient,
 	}
 
 	srv := &http.Server{

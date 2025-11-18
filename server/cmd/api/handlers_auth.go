@@ -12,7 +12,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// TODO: add rate limiting for this endpoint
 func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
