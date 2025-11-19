@@ -1,5 +1,3 @@
-import { GoogleLoginButton } from "@/features/auth";
-
 export default function Page() {
-  return <GoogleLoginButton />;
+  return <div>Todue</div>;
 }

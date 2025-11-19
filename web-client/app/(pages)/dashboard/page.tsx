@@ -1,6 +1,6 @@
-import { LogoutButton } from "@/features/auth";
 import { getSession } from "@/utils/session";
 import { redirect } from "next/navigation";
+import { LogoutButton } from "@/features/auth";
 import Image from "next/image";
 
 export default async function DashboardPage() {
