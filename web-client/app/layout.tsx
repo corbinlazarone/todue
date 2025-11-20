@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./globals.css";
 import { ThemeProvider } from "@/shared/components/theme-provider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Todue - AI Syllabus to Calendar automation tool",
@@ -27,6 +28,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster position="top-center" />
           </ThemeProvider>
         </GoogleOAuthProvider>
       </body>

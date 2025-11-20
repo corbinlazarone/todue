@@ -12,6 +12,7 @@ import { Field, FieldDescription, FieldGroup } from "@/shared/ui/field";
 import { GoogleLogin } from "@react-oauth/google";
 import { login } from "../api/actions";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -36,9 +37,8 @@ export function LoginForm({
                     try {
                       await login(jwt);
                       router.push("/dashboard");
-                    } catch (error) {
-                      // TODO: show toast of error
-                      console.error("Login error:", error);
+                    } catch {
+                      toast.error("Failed to login. Try again or contact us.");
                     }
                   }}
                   onError={() => {
