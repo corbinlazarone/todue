@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
+import { logout } from "@/features/auth/api/actions";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -21,9 +22,6 @@ import { SessionData } from "@/utils/session";
 
 export function NavUser({ user }: { user: SessionData["userData"] }) {
   const { isMobile } = useSidebar();
-
-  console.log(JSON.stringify(user, null, 2));
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -86,7 +84,7 @@ export function NavUser({ user }: { user: SessionData["userData"] }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={async () => await logout()}>
               <LogOut />
               Log out
             </DropdownMenuItem>
