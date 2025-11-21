@@ -19,8 +19,10 @@ import {
 } from "@/shared/ui/sidebar";
 import { EllipsisVertical, SunMoon, LogOut } from "lucide-react";
 import { SessionData } from "@/utils/session";
+import { useTheme } from "next-themes";
 
 export function NavUser({ user }: { user: SessionData["userData"] }) {
+  const { theme, setTheme } = useTheme();
   const { isMobile } = useSidebar();
   return (
     <SidebarMenu>
@@ -74,14 +76,14 @@ export function NavUser({ user }: { user: SessionData["userData"] }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  setTheme(theme === "dark" ? "light" : "dark");
+                }}
+              >
                 <SunMoon />
                 Appearance
               </DropdownMenuItem>
-              {/* <DropdownMenuItem> */}
-              {/*   <CreditCard /> */}
-              {/*   Billing */}
-              {/* </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={async () => await logout()}>
