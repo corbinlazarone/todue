@@ -4,7 +4,7 @@ export default function HistoryPage() {
   return (
     <PageHeader
       title="History"
-      message="Your upload history will appear here."
+      // message="You upload history will appear here."
     />
   );
 }
