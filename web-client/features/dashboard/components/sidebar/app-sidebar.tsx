@@ -4,11 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SessionData } from "@/utils/session";
 import {
+  UploadIcon,
+  GalleryHorizontalEnd,
   LayoutDashboard,
-  CheckSquare,
-  FolderKanban,
-  BarChart3,
-  Settings,
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,28 +23,18 @@ import { NavUser } from "./nav-user";
 const navItems = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/dashboard/",
     icon: LayoutDashboard,
   },
   {
-    title: "Tasks",
-    url: "/dashboard/tasks",
-    icon: CheckSquare,
+    title: "Upload",
+    url: "/dashboard/upload",
+    icon: UploadIcon,
   },
   {
-    title: "Projects",
-    url: "/dashboard/projects",
-    icon: FolderKanban,
-  },
-  {
-    title: "Analytics",
-    url: "/dashboard/analytics",
-    icon: BarChart3,
-  },
-  {
-    title: "Settings",
-    url: "/dashboard/settings",
-    icon: Settings,
+    title: "History",
+    url: "/dashboard/history",
+    icon: GalleryHorizontalEnd,
   },
 ];
 

@@ -1,7 +1,7 @@
 import { getSession } from "@/utils/session";
 import { redirect } from "next/navigation";
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
-import { AppSidebar } from "@/features/dashboard/components/app-sidebar";
+import { AppSidebar } from "@/features/dashboard";
 
 export default async function DashboardLayout({
   children,

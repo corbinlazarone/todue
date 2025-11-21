@@ -17,7 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/shared/ui/sidebar";
-import { EllipsisVertical, SunMoon, CreditCard, LogOut } from "lucide-react";
+import { EllipsisVertical, SunMoon, LogOut } from "lucide-react";
 import { SessionData } from "@/utils/session";
 
 export function NavUser({ user }: { user: SessionData["userData"] }) {
@@ -78,10 +78,10 @@ export function NavUser({ user }: { user: SessionData["userData"] }) {
                 <SunMoon />
                 Appearance
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
+              {/* <DropdownMenuItem> */}
+              {/*   <CreditCard /> */}
+              {/*   Billing */}
+              {/* </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={async () => await logout()}>
