@@ -1,0 +1,142 @@
+{
+  "courses": [
+    {
+      "course_id": 1,
+      "course_name": "Introduction to Computer Science",
+      "assignments": [
+        {
+          "id": 1,
+          "name": "Programming Assignment 1: Hello World",
+          "description": "Write a simple program that prints 'Hello, World!' in Python. Submit via GitHub.",
+          "due_date": "2025-02-05",
+          "color": "#3B82F6",
+          "start_time": "09:00",
+          "end_time": "17:00",
+          "reminder": 24
+        },
+        {
+          "id": 2,
+          "name": "Midterm Exam",
+          "description": "Comprehensive exam covering weeks 1-7. Topics: variables, loops, conditionals, functions, and data structures.",
+          "due_date": "2025-03-10",
+          "color": "#EF4444",
+          "start_time": "14:00",
+          "end_time": "16:00",
+          "reminder": 48
+        },
+        {
+          "id": 3,
+          "name": "Project: Build a Calculator",
+          "description": "Create a functional calculator application with basic arithmetic operations. Include error handling.",
+          "due_date": "2025-04-15",
+          "color": "#8B5CF6",
+          "start_time": "08:00",
+          "end_time": "18:00",
+          "reminder": 72
+        },
+        {
+          "id": 4,
+          "name": "Final Project",
+          "description": "Develop a complete application of your choice. Must include documentation, tests, and presentation.",
+          "due_date": "2025-05-20",
+          "color": "#F59E0B",
+          "start_time": "09:00",
+          "end_time": "18:00",
+          "reminder": 96
+        }
+      ]
+    },
+    {
+      "course_id": 2,
+      "course_name": "Data Structures and Algorithms",
+      "assignments": [
+        {
+          "id": 5,
+          "name": "Assignment 1: Linked Lists",
+          "description": "Implement a singly linked list with insert, delete, and search operations.",
+          "due_date": "2025-02-12",
+          "color": "#10B981",
+          "start_time": "10:00",
+          "end_time": "17:00",
+          "reminder": 24
+        },
+        {
+          "id": 6,
+          "name": "Quiz 1: Big O Notation",
+          "description": "Online quiz on algorithm complexity analysis. 30 minutes, multiple choice.",
+          "due_date": "2025-02-20",
+          "color": "#6366F1",
+          "start_time": "15:00",
+          "end_time": "15:30",
+          "reminder": 12
+        },
+        {
+          "id": 7,
+          "name": "Assignment 2: Sorting Algorithms",
+          "description": "Implement bubble sort, merge sort, and quick sort. Compare performance.",
+          "due_date": "2025-03-19",
+          "color": "#10B981",
+          "start_time": "09:00",
+          "end_time": "18:00",
+          "reminder": 36
+        },
+        {
+          "id": 8,
+          "name": "Final Exam",
+          "description": "Comprehensive exam covering all data structures and algorithms taught in the course.",
+          "due_date": "2025-05-15",
+          "color": "#EF4444",
+          "start_time": "13:00",
+          "end_time": "15:00",
+          "reminder": 48
+        }
+      ]
+    },
+    {
+      "course_id": 3,
+      "course_name": "Web Development with React",
+      "assignments": [
+        {
+          "id": 9,
+          "name": "Setup & Hello React",
+          "description": "Create a React app using Create React App. Display a welcome message.",
+          "due_date": "2025-02-08",
+          "color": "#06B6D4",
+          "start_time": "10:00",
+          "end_time": "16:00",
+          "reminder": 24
+        },
+        {
+          "id": 10,
+          "name": "Build a Todo List App",
+          "description": "Create a functional todo list with add, delete, and mark complete features using React hooks.",
+          "due_date": "2025-03-05",
+          "color": "#8B5CF6",
+          "start_time": "09:00",
+          "end_time": "18:00",
+          "reminder": 48
+        },
+        {
+          "id": 11,
+          "name": "API Integration Project",
+          "description": "Fetch data from a public API and display it in a React component. Implement loading and error states.",
+          "due_date": "2025-04-02",
+          "color": "#10B981",
+          "start_time": "08:00",
+          "end_time": "17:00",
+          "reminder": 60
+        },
+        {
+          "id": 12,
+          "name": "Final Capstone: Full Stack App",
+          "description": "Build a complete web application with frontend (React) and backend (Node.js). Include authentication.",
+          "due_date": "2025-05-25",
+          "color": "#F59E0B",
+          "start_time": "09:00",
+          "end_time": "18:00",
+          "reminder": 120
+        }
+      ]
+    }
+  ]
+}
