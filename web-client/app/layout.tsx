@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./globals.css";
 import { ThemeProvider } from "@/shared/components/theme-provider";
-import { Toaster } from "sonner";
+import { Toaster } from "@/shared/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Todue - AI Syllabus to Calendar automation tool",

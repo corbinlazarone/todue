@@ -12,12 +12,17 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { AlertCircle, Calendar, Clock, Edit2, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function AssignmentCard() {
   const [assignments, setAssignments] = useState(
     sampleData.courses.flatMap((course) => course.assignments),
   );
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleEdit = (assignment: any) => {
     console.log("Edit:", assignment);
@@ -28,6 +33,7 @@ export default function AssignmentCard() {
   };
 
   const formatDate = (date: string) => {
+    if (!isMounted) return date; // Return raw date on server
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -36,6 +42,7 @@ export default function AssignmentCard() {
   };
 
   const formatTime = (time: string) => {
+    if (!isMounted) return time; // Return raw time on server
     return new Date(`2000-01-01T${time}`).toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "2-digit",
