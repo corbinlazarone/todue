@@ -1,9 +1,13 @@
 services:
-  web-client: 
+  web-client:
     container_name: todue-web-client
     build:
       context: ./web-client
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+        - SESSION_PASSWORD=${SESSION_PASSWORD}
+        - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     ports:
       - "3000:3000"
     env_file:
