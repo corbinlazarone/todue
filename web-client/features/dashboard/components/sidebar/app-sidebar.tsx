@@ -46,13 +46,17 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild size="lg">
               <Link href="/">
-                <img src="/icon.svg" className="size-5" alt="Todue" />
+                <img
+                  src="/icon.svg"
+                  className="size-8 group-data-[collapsible=icon]:size-6"
+                  alt="Todue"
+                />
                 <span className="text-base font-semibold">Todue</span>
               </Link>
             </SidebarMenuButton>
