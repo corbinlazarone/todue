@@ -53,8 +53,8 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
             <SidebarMenuButton asChild size="lg">
               <Link href="/">
                 <img
-                  src="/icon.svg"
-                  className="size-8 group-data-[collapsible=icon]:size-6"
+                  src="/icon.ico"
+                  className="size-5 group-data-[collapsible=icon]:size-6"
                   alt="Todue"
                 />
                 <span className="text-base font-semibold">Todue</span>

@@ -9,7 +9,7 @@ export default function LoginPage() {
           className="flex items-center gap-2 self-center font-medium text-lg"
         >
           <div className="flex size-12 items-center justify-center rounded-lg">
-            <img src="../icon.svg" alt="Todue" className="size-10" />
+            <img src="../icon.ico" alt="Todue" className="size-8" />
           </div>
           Todue
         </a>
