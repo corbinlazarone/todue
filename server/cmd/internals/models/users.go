@@ -34,7 +34,7 @@ func (u *UserModel) CheckIfExists(claims auth.GoogleClaims) (User, error) {
                   FROM users
                   WHERE google_id = $1 OR email = $2`
 
-	rows, _ := u.DB.Query(context.Background(), statement, claims.Sub, claims.Email)
+	rows, err := u.DB.Query(context.Background(), statement, claims.Sub, claims.Email)
 	user, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[User])
 
 	if err != nil {
@@ -69,7 +69,7 @@ func (u *UserModel) createNewUser(claims auth.GoogleClaims) (User, error) {
                 RETURNING id, google_id, email, email_verified, first_name, last_name, picture, created_at, updated_at`
 
 	var user User
-	rows, _ := u.DB.Query(context.Background(), statement,
+	rows, err := u.DB.Query(context.Background(), statement,
 		claims.Sub,
 		claims.Email,
 		claims.EmailVerified,
@@ -77,8 +77,11 @@ func (u *UserModel) createNewUser(claims auth.GoogleClaims) (User, error) {
 		claims.LastName,
 		claims.Picture,
 	)
-	user, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[User])
+	if err != nil {
+		return User{}, err
+	}
 
+	user, err = pgx.CollectOneRow(rows, pgx.RowToStructByName[User])
 	if err != nil {
 		return User{}, err
 	}

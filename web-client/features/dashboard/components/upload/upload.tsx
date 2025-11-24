@@ -19,9 +19,14 @@ export function Upload() {
       return;
     }
 
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      toast.error("File size must be less than 5MB");
+      return;
+    }
+
     try {
       const buffer = Buffer.from(await file.arrayBuffer());
-      console.log("Buffer:", buffer);
 
       await extractTextFromPDF(buffer);
 

@@ -27,6 +27,9 @@ type CourseData struct {
 func (app *application) ExtractCourseData(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
+	// Limit request body size to 5MB
+	r.Body = http.MaxBytesReader(w, r.Body, 5<<20)
+
 	var rep models.Response
 
 	type parameters struct {
@@ -39,6 +42,10 @@ func (app *application) ExtractCourseData(w http.ResponseWriter, r *http.Request
 	err := decoder.Decode(&params)
 	if err != nil {
 		app.errLog.Println(err)
+		if err.Error() == "http: request body too large" {
+			rep.WriteErrorResponse(w, http.StatusRequestEntityTooLarge, "Request body exceeds 5MB limit")
+			return
+		}
 		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Invalid request body")
 		return
 	}

@@ -15,6 +15,9 @@ import (
 func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
+	// Limit request body size to 1 MB
+	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
+
 	var rep models.Response
 
 	type parameters struct {
@@ -42,25 +45,25 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := app.users.CheckIfExists(claims)
 	if err != nil {
 		app.errLog.Println(err)
-		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Error checking if user exists")
+		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")
 		return
 	}
 
-	tokenString, err := generateJWT(user, claims)
+	tokenString, err := app.generateJWT(user)
 	if err != nil {
 		app.errLog.Println(err)
-		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Error generating JWT")
+		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")
 		return
 	}
 
 	rep.WriteSuccessResponse(w, tokenString, http.StatusOK)
 }
 
-func generateJWT(user models.User, googleClaims auth.GoogleClaims) (string, error) {
+func (app *application) generateJWT(user models.User) (string, error) {
 	claims := jwt.MapClaims{
 		"sub":        user.Id,
 		"iat":        time.Now().Unix(),
-		"exp":        googleClaims.ExpiresAt.Unix(), // Expires same time as Google JWT
+		"exp":        time.Now().Add(1 * time.Hour).Unix(), // Expires 1 hour
 		"iss":        "todue-api",
 		"aud":        "todue-web",
 		"email":      user.Email,
