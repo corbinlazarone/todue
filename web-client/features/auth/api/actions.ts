@@ -12,7 +12,7 @@ export async function login(googleJWT: string | undefined) {
     throw new Error("Google JWT undefined");
   }
 
-  const rep = await fetch(`${apiUrl}/auth/login`, {
+  const rep = await fetch(`${apiUrl}/api/auth/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
