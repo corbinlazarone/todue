@@ -25,9 +25,6 @@ export function Upload() {
             <h2 className="text-2xl font-semibold tracking-tight">
               Your Extracted Assignments
             </h2>
-            <p className="text-sm text-muted-foreground">
-              Manage your course assignments
-            </p>
           </div>
           <Button
             variant="outline"
