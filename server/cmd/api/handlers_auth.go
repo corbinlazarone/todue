@@ -2,14 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"net/http"
-	"os"
-	"time"
 
 	"github.com/corbinlazarone/cmovie/cmd/internals/auth"
 	"github.com/corbinlazarone/cmovie/cmd/internals/models"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +46,8 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenString, err := app.generateJWT(user)
+	tokenString, err := generateJWT(user)
+	fmt.Println(tokenString)
 	if err != nil {
 		app.errLog.Println(err)
 		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")
@@ -57,33 +55,4 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rep.WriteSuccessResponse(w, tokenString, http.StatusOK)
-}
-
-func (app *application) generateJWT(user models.User) (string, error) {
-	claims := jwt.MapClaims{
-		"sub":        user.Id,
-		"iat":        time.Now().Unix(),
-		"exp":        time.Now().Add(1 * time.Hour).Unix(), // Expires 1 hour
-		"iss":        "todue-api",
-		"aud":        "todue-web",
-		"email":      user.Email,
-		"first_name": user.FirstName,
-		"last_name":  user.LastName,
-		"picture":    user.Picture,
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	secretKey := os.Getenv("JWT_SECRET")
-	if secretKey == "" {
-		return "", errors.New("JWT_SECRET not set")
-	}
-
-	tokenString, err := token.SignedString([]byte(secretKey))
-
-	if err != nil {
-		return "", err
-	}
-
-	return tokenString, nil
 }

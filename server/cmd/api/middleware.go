@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/corbinlazarone/cmovie/cmd/internals/models"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/time/rate"
 )
 
@@ -60,6 +62,39 @@ func rateLimter(next http.Handler) http.Handler {
 			return
 		}
 
+		next.ServeHTTP(w, r)
+	})
+}
+
+func requireAuth(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		var rep models.Response
+
+		// get bearer token from header
+		authHeader := r.Header.Get("Authorization")
+		extractedToken, err := extractBearerToken(authHeader)
+		if err != nil {
+			rep.WriteErrorResponse(w, http.StatusUnauthorized, err.Error())
+			return
+		}
+
+		secretKey := os.Getenv("JWT_SECRET")
+		if secretKey == "" {
+			log.Fatal("JWT_SECRET not set")
+		}
+
+		// validate token using golang-jwt/jwt package
+		token, err := jwt.Parse(extractedToken, func(token *jwt.Token) (any, error) {
+			return []byte(secretKey), nil
+		}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
+
+		if err != nil || !token.Valid {
+			rep.WriteErrorResponse(w, http.StatusUnauthorized, "Invalid token")
+			return
+		}
+
+		// token is valid - continue with the request
 		next.ServeHTTP(w, r)
 	})
 }
