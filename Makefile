@@ -2,7 +2,7 @@
 
 # Default target - show help
 help:
-	@echo "cmovie - Available commands:"
+	@echo "todue - Available commands:"
 	@echo ""
 	@echo "Development:"
 	@echo "  make dev            - Start all services (web-client, server, db)"
@@ -66,8 +66,8 @@ run:
 
 build:
 	@echo "Building server binary..."
-	cd server && go build -o ../bin/cmovie-server ./cmd/api
-	@echo "Binary created at: bin/cmovie-server"
+	cd server && go build -o ../bin/todue-server ./cmd/api
+	@echo "Binary created at: bin/todue-server"
 
 # Database Operations
 db-up:
@@ -103,15 +103,15 @@ db-shell:
 # Migration Operations (using goose)
 migrate-up:
 	@echo "Running migrations..."
-	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2-)" up
+	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2- | sed 's/@db:/@localhost:/')" up
 
 migrate-down:
 	@echo "Rolling back last migration..."
-	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2-)" down
+	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2- | sed 's/@db:/@localhost:/')" down
 
 migrate-status:
 	@echo "Migration status:"
-	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2-)" status
+	cd server/cmd/internals/migrations && goose postgres "$$(grep DB_CONN ../../../../.env | cut -d '=' -f2- | sed 's/@db:/@localhost:/')" status
 
 # Cleanup
 clean:

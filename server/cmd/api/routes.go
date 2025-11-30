@@ -9,9 +9,16 @@ import (
 
 func (app *application) routes() http.Handler {
 	router := httprouter.New()
-	router.Handler(http.MethodGet, "/", http.HandlerFunc(app.health))
 
-	std := alice.New(secureHeaders)
+	// public routes
+	router.Handler(http.MethodGet, "/", http.HandlerFunc(app.health))
+	router.Handler(http.MethodPost, "/api/auth/login", http.HandlerFunc(app.loginHandler))
+
+	// Protected routes
+	protected := alice.New(requireAuth)
+	router.Handler(http.MethodPost, "/api/ai/extract", protected.ThenFunc(app.ExtractCourseData))
+
+	std := alice.New(enableCORS, secureHeaders, rateLimter)
 
 	return std.Then(router)
 }

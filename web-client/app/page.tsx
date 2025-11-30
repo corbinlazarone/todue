@@ -1,3 +1,5 @@
+import { Landing } from "@/features/landing";
+
 export default function Page() {
-  return <div>cmovie client</div>;
+  return <Landing />;
 }
