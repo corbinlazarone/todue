@@ -52,7 +52,7 @@ func main() {
 	}
 
 	// create anthropic client
-	apiKey := os.Getenv("ANTRHOPIC_API_KEY")
+	apiKey := os.Getenv("ANTHROPIC_API_KEY")
 	if apiKey == "" {
 		errLog.Fatal("ANTHROPIC_API_KEY env var not set")
 	}
