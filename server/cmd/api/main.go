@@ -58,8 +58,6 @@ func main() {
 	}
 	anthropicClient := anthropic.NewClient(apiKey)
 
-	// test gh creds
-
 	app := &application{
 		infoLog:         infoLog,
 		errLog:          errLog,
