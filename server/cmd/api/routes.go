@@ -18,7 +18,7 @@ func (app *application) routes() http.Handler {
 	protected := alice.New(requireAuth)
 	router.Handler(http.MethodPost, "/api/ai/extract", protected.ThenFunc(app.ExtractCourseData))
 
-	std := alice.New(enableCORS, secureHeaders, rateLimter)
+	std := alice.New(enableCORS, secureHeaders, rateLimter, app.recoverFromPanic)
 
 	return std.Then(router)
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -48,6 +49,26 @@ func enableCORS(next http.Handler) http.Handler {
 			w.WriteHeader(http.StatusOK)
 			return
 		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+// Show 500 internal server error to user on request panics
+func (app *application) recoverFromPanic(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// defered function that will alwasy run in the event of a panic as Go unwinds
+		// the stack.
+		defer func() {
+			if err := recover(); err != nil {
+				w.Header().Set("Connetion", "close")
+
+				// show a 500 server error to the user
+				var rep models.Response
+				app.errLog.Println(err)
+				rep.WriteErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("%s", err))
+			}
+		}()
 
 		next.ServeHTTP(w, r)
 	})
