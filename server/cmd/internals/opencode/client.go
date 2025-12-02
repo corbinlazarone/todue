@@ -3,6 +3,7 @@ package opencode
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -53,12 +54,12 @@ func (c *Client) CreateMessage(req OpenCodeRequest) (*OpenCodeResponse, error) {
 	// Make the API call
 	jsonData, err := json.Marshal(openAIReq)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal request: %w", err)
+		return nil, err
 	}
 
 	httpReq, err := http.NewRequest("POST", c.baseURL+"/chat/completions", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", err)
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
@@ -66,18 +67,17 @@ func (c *Client) CreateMessage(req OpenCodeRequest) (*OpenCodeResponse, error) {
 
 	resp, err := c.httpClient.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("HTTP request failed: %w", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		return nil, fmt.Errorf("API request failed with status %d: %s", resp.StatusCode, string(body))
+		return nil, fmt.Errorf("API request failed with status %d", resp.StatusCode)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response: %w", err)
+		return nil, err
 	}
 
 	// Parse OpenAI response and extract content
@@ -90,11 +90,11 @@ func (c *Client) CreateMessage(req OpenCodeRequest) (*OpenCodeResponse, error) {
 	}
 
 	if err := json.Unmarshal(body, &openAIResp); err != nil {
-		return nil, fmt.Errorf("failed to parse response: %w", err)
+		return nil, err
 	}
 
 	if len(openAIResp.Choices) == 0 {
-		return nil, fmt.Errorf("no choices in response")
+		return nil, errors.New("no choices in response")
 	}
 
 	return &OpenCodeResponse{

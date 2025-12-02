@@ -53,7 +53,8 @@ func enableCORS(next http.Handler) http.Handler {
 	})
 }
 
-var limiter = rate.NewLimiter(1, 3)
+// Allow 2 requests per second with burst of 10 for AI extraction
+var limiter = rate.NewLimiter(2, 10)
 
 func rateLimter(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
