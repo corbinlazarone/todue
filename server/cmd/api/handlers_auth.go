@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/corbinlazarone/cmovie/cmd/internals/auth"
@@ -47,7 +46,6 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokenString, err := generateJWT(user)
-	fmt.Println(tokenString)
 	if err != nil {
 		app.errLog.Println(err)
 		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")

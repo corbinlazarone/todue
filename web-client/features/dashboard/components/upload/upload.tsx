@@ -6,7 +6,10 @@ import { Input } from "@/shared/ui/input";
 import AssignmentCard from "./assingment-card";
 import { toast } from "sonner";
 import { useRef } from "react";
-import { extractTextFromPDF } from "../../api/upload/actions";
+import {
+  extractCourseData,
+  extractTextFromPDF,
+} from "../../api/upload/actions";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,12 +30,18 @@ export function Upload() {
 
     try {
       const buffer = Buffer.from(await file.arrayBuffer());
+      const text = await extractTextFromPDF(buffer);
 
-      await extractTextFromPDF(buffer);
+      const courseDataPromise = extractCourseData(text);
 
-      // TODO: send to go api to claude
+      toast.promise(courseDataPromise, {
+        loading: "Uploading...",
+        success: () => `${file.name} has been uploaded!`,
+        error: "Error",
+      });
 
-      toast.success("Extracted text from PDF");
+      const courseData = await courseDataPromise;
+      console.log(JSON.stringify(courseData, null, 2));
     } catch (error) {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;

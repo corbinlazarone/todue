@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/corbinlazarone/cmovie/cmd/internals/models"
+	"github.com/corbinlazarone/cmovie/cmd/internals/opencode"
 )
 
 type Assignment struct {
@@ -50,5 +52,72 @@ func (app *application) ExtractCourseData(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// TODO: do claude extraction
+	// Call OpenCode AI for syllabus extraction
+	aiReq := opencode.OpenCodeRequest{
+		// Model:     "qwen3-coder", // Commented out - using free grok-code-fast-1 from client
+		MaxTokens: 4000,
+		SystemMessage: `You are a precise course information extraction assistant. Extract only explicitly stated information from the syllabus. Follow these rules:
+        1. Only extract assignments, exams, and deadlines that have specific dates
+        2. Ensure dates are in YYYY-MM-DD format
+        3. Convert all times to 24-hour format (HH:mm)
+        4. If no specific time is mentioned, use "23:59" as the default
+        5. If no specific end time is mentioned, make it the same as start time
+        6. Assign appropriate colors from this list: #7986cb, #33b679, #8e24aa, #e67c73, #f6c026, #f5511d, #039be5, #3f51b5, #0b8043, #d60000
+		    7. Set default reminder to 1440 (1 day) if not specified
+        8. Ensure each assignment has a unique ID
+        Do not infer or generate any data not directly present in the source text.`,
+		Message: []opencode.Message{
+			{
+				Role: "user",
+				Content: fmt.Sprintf(`Extract course information and assignments from this syllabus in this exact format:
+{
+  "courses": [
+    {
+      "course_id": number,
+      "course_name": "Course Name",
+      "assignments": [
+        {
+          "id": number,
+          "name": "Assignment Name",
+          "description": "Description",
+          "due_date": "YYYY-MM-DD",
+          "color": "hex color from the provided list",
+          "start_time": "HH:mm",
+          "end_time": "HH:mm",
+          "reminder": number (minutes)
+        }
+      ]
+    }
+  ]
+}
+
+Syllabus text:
+%s`, params.PDFText),
+			},
+		},
+	}
+
+	aiResp, err := app.opencodeClient.CreateMessage(aiReq)
+	if err != nil {
+		app.errLog.Printf("AI extraction error: %v", err)
+		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Failed to extract course data")
+		return
+	}
+
+	// Parse the JSON response into our expected format
+	var courseResponse struct {
+		Courses []CourseData `json:"courses"`
+	}
+
+	err = json.Unmarshal([]byte(aiResp.JSONResponse), &courseResponse)
+	if err != nil {
+		app.errLog.Printf("JSON parsing error: %v", err)
+		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Failed to parse AI response")
+		return
+	}
+
+	// Return the extracted course data
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(courseResponse)
 }
