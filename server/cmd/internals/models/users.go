@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/corbinlazarone/cmovie/cmd/internals/auth"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/auth"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )

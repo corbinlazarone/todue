@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/corbinlazarone/cmovie/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
 	"github.com/golang-jwt/jwt/v5"
 )
 

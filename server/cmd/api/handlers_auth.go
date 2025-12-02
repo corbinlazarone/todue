@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/corbinlazarone/cmovie/cmd/internals/auth"
-	"github.com/corbinlazarone/cmovie/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/auth"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
 )
 
 func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/corbinlazarone/cmovie/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/time/rate"
 )

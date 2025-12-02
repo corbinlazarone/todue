@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/corbinlazarone/cmovie/cmd/internals/models"
-	"github.com/corbinlazarone/cmovie/cmd/internals/opencode"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/opencode"
 )
 
 type Assignment struct {
