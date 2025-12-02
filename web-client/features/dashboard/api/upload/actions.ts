@@ -6,7 +6,7 @@ import PDFParser from "pdf2json";
 function safeDecodeURIComponent(str: string): string {
   try {
     return decodeURIComponent(str);
-  } catch (error) {
+  } catch {
     console.warn("Failed to decode URI component:", str);
     return str;
   }

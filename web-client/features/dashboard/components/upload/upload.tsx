@@ -42,7 +42,7 @@ export function Upload() {
 
       const courseData = await courseDataPromise;
       console.log(JSON.stringify(courseData, null, 2));
-    } catch (error) {
+    } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
     }
@@ -59,6 +59,12 @@ export function Upload() {
           className="cursor-pointer w-auto"
         />
         <Button onClick={() => handleExtract()}>Extract</Button>
+        <Button
+          variant="outline"
+          onClick={() => toast.info("Not implemented")}
+        >
+          Sync to Google Calendar
+        </Button>
       </div>
 
       <div className="space-y-4">
@@ -70,9 +76,9 @@ export function Upload() {
           </div>
           <Button
             variant="outline"
-            onClick={() => toast.info("Not implmented")}
+            onClick={() => toast.info("Not implemented")}
           >
-            Sync to Google Calendar
+            Add new Assignment
           </Button>
         </div>
         <AssignmentCard />
