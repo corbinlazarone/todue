@@ -2,6 +2,7 @@
 
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { Card } from "@/shared/ui/card";
 
 import AssignmentCard from "./assingment-card";
 import { toast } from "sonner";
@@ -13,7 +14,8 @@ import {
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [disWhileExtract, setDisWhileExtract] = useState(true);
+  const [disWhileExtract, setDisWhileExtract] = useState(false);
+  const [disBeforeExtract, setDisBeforeExtract] = useState(true);
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -30,6 +32,8 @@ export function Upload() {
     }
 
     try {
+      setDisWhileExtract(true);
+
       const buffer = Buffer.from(await file.arrayBuffer());
       const text = await extractTextFromPDF(buffer);
 
@@ -49,6 +53,7 @@ export function Upload() {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
     } finally {
+      setDisBeforeExtract(false);
       setDisWhileExtract(false);
     }
   }
@@ -63,15 +68,24 @@ export function Upload() {
           accept=".pdf"
           className="cursor-pointer w-auto"
         />
-        <Button onClick={() => handleExtract()}>Extract</Button>
+        <Button disabled={disWhileExtract} onClick={() => handleExtract()}>
+          Extract
+        </Button>
         <Button
           variant="secondary"
-          disabled={disWhileExtract}
+          disabled={disBeforeExtract}
           onClick={() => toast.info("Not implemented")}
         >
           Sync to Google Calendar
         </Button>
       </div>
+
+      {!disBeforeExtract && (
+        <Card className="p-3 text-sm border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200">
+          Please review the extracted assignments below for any mistakes before
+          syncing to your Google Calendar.
+        </Card>
+      )}
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -82,7 +96,7 @@ export function Upload() {
           </div>
           <Button
             variant="outline"
-            disabled={disWhileExtract}
+            disabled={disBeforeExtract}
             onClick={() => toast.info("Not implemented")}
           >
             Add new Assignment
