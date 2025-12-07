@@ -58,7 +58,6 @@ func (app *application) ExtractCourseData(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// Call OpenCode AI for syllabus extraction
 	aiReq := opencode.OpenCodeRequest{
 		MaxTokens: 4000,
 		SystemMessage: `You are a precise course information extraction assistant. Extract only explicitly stated information from the syllabus. Follow these rules:

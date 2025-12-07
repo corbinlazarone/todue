@@ -5,7 +5,7 @@ import { Input } from "@/shared/ui/input";
 
 import AssignmentCard from "./assingment-card";
 import { toast } from "sonner";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   extractCourseData,
   extractTextFromPDF,
@@ -13,6 +13,7 @@ import {
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [disWhileExtract, setDisWhileExtract] = useState(true);
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -41,10 +42,14 @@ export function Upload() {
       });
 
       const courseData = await courseDataPromise;
+
+      // NOTE: console log
       console.log(JSON.stringify(courseData, null, 2));
     } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
+    } finally {
+      setDisWhileExtract(false);
     }
   }
 
@@ -60,7 +65,8 @@ export function Upload() {
         />
         <Button onClick={() => handleExtract()}>Extract</Button>
         <Button
-          variant="outline"
+          variant="secondary"
+          disabled={disWhileExtract}
           onClick={() => toast.info("Not implemented")}
         >
           Sync to Google Calendar
@@ -76,6 +82,7 @@ export function Upload() {
           </div>
           <Button
             variant="outline"
+            disabled={disWhileExtract}
             onClick={() => toast.info("Not implemented")}
           >
             Add new Assignment
