@@ -1,7 +1,6 @@
-.PHONY: help dev dev-build dev-stop dev-restart dev-logs build run db-up db-down db-reset db-shell migrate-up migrate-down migrate-status clean
+.PHONY: help test dev dev-build dev-stop dev-restart dev-logs build run db-up db-down db-reset db-shell migrate-up migrate-down migrate-status clean
 
-# Default target - show help
-help:
+help: 
 	@echo "todue - Available commands:"
 	@echo ""
 	@echo "Development:"
@@ -14,7 +13,8 @@ help:
 	@echo ""
 	@echo "Local Development (outside Docker):"
 	@echo "  make run            - Run server locally (requires db running)"
-	@echo "  make build          - Build the server binary"
+	@echo "  make build          - Build the server binary (runs tests first)"
+	@echo "  make test           - Run server tests"
 	@echo ""
 	@echo "Database:"
 	@echo "  make db-up          - Start only the database"
@@ -29,6 +29,11 @@ help:
 	@echo ""
 	@echo "Cleanup:"
 	@echo "  make clean          - Remove built binaries and docker volumes"
+
+# Testing
+test:
+	@echo "Running server tests..."
+	cd server && go test ./...
 
 # Development - Docker Compose
 dev:
@@ -65,6 +70,8 @@ run:
 	cd server && go run ./cmd/api
 
 build:
+	@echo "Running tests..."
+	cd server && go test ./...
 	@echo "Building server binary..."
 	cd server && go build -o ../bin/todue-server ./cmd/api
 	@echo "Binary created at: bin/todue-server"

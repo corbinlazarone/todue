@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -52,4 +53,41 @@ func generateJWT(user models.User) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+func sanitizePDFText(input string) error {
+	if len(input) > 100*1024 {
+		return errors.New("input text too long")
+	}
+
+	// Forbidden keywords that could indicate prompt injection
+	forbidden := []string{
+		"system:",
+		"user:",
+		"assistant:",
+		"ignore previous",
+		"forget instructions",
+		"override",
+		"now do this",
+		"respond with",
+		"instead of",
+		"bypass",
+		"jailbreak",
+	}
+
+	lowerInput := strings.ToLower(input)
+	for _, word := range forbidden {
+		if strings.Contains(lowerInput, word) {
+			return fmt.Errorf("input contains forbidden content: %s", word)
+		}
+	}
+
+	// Character validation: only printable ASCII + basic Unicode
+	for _, r := range input {
+		if r < 32 && r != 9 && r != 10 && r != 13 { // allow tab, newline, carriage return
+			return errors.New("input contains invalid characters")
+		}
+	}
+
+	return nil
 }

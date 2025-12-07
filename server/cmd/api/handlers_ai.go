@@ -58,6 +58,12 @@ func (app *application) ExtractCourseData(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	if err := sanitizePDFText(params.PDFText); err != nil {
+		app.errLog.Printf("Input sanitization failed: %v", err)
+		rep.WriteErrorResponse(w, http.StatusBadRequest, "Invalid input content")
+		return
+	}
+
 	aiReq := opencode.OpenCodeRequest{
 		MaxTokens: 4000,
 		SystemMessage: `You are a precise course information extraction assistant. Extract only explicitly stated information from the syllabus. Follow these rules:

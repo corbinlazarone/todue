@@ -10,6 +10,9 @@ WORKDIR /app
 # Copy everything
 COPY . .
 
+# Run tests before building
+RUN go test ./...
+
 # Build the application - compile all files in cmd package
 RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/api
 
