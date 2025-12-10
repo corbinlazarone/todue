@@ -82,6 +82,8 @@ export function Upload() {
 
       {!disBeforeExtract && (
         <Card className="p-3 text-sm border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200">
+          {/* TODO: Tell the user that we will use their primary google calendar.
+             show them the name of that calendar before sumbiting.*/}
           Please review the extracted assignments below for any mistakes before
           syncing to your Google Calendar.
         </Card>
