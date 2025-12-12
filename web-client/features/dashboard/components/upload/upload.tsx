@@ -68,12 +68,15 @@ export function Upload() {
           accept=".pdf"
           className="cursor-pointer w-auto"
         />
-        <Button disabled={disWhileExtract} onClick={() => handleExtract()}>
+        <Button
+          disabled={disWhileExtract || disWhileExtract}
+          onClick={() => handleExtract()}
+        >
           Extract
         </Button>
         <Button
           variant="secondary"
-          disabled={disBeforeExtract}
+          disabled={disBeforeExtract || disWhileExtract}
           onClick={() => toast.info("Not implemented")}
         >
           Sync to Google Calendar
@@ -98,7 +101,7 @@ export function Upload() {
           </div>
           <Button
             variant="outline"
-            disabled={disBeforeExtract}
+            disabled={disBeforeExtract || disWhileExtract}
             onClick={() => toast.info("Not implemented")}
           >
             Add new Assignment
