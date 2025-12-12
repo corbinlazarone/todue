@@ -14,6 +14,7 @@ type Assignment struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	DueDate     string `json:"due_date"`
+	AllDay      bool   `json:"all_day"`
 	Color       string `json:"color"`
 	StartTime   string `json:"start_time"`
 	EndTime     string `json:"end_time"`
@@ -69,12 +70,11 @@ func (app *application) ExtractCourseData(w http.ResponseWriter, r *http.Request
 		SystemMessage: `You are a precise course information extraction assistant. Extract only explicitly stated information from the syllabus. Follow these rules:
 1. Only extract assignments, exams, and deadlines that have specific dates
 2. Ensure dates are in YYYY-MM-DD format
-3. Convert all times to 24-hour format (HH:mm)
-4. If no specific time is mentioned, use "23:59" as the default
-5. If no specific end time is mentioned, make it the same as start time
-6. Assign appropriate colors from this list: #7986cb, #33b679, #8e24aa, #e67c73, #f6c026, #f5511d, #039be5, #3f51b5, #0b8043, #d60000
-7. Set default reminder to 1440 (1 day) if not specified
-8. Ensure each assignment has a unique ID
+3. If no specific time is mentioned, use "11:59PM" as the default
+4. Assign appropriate colors from this list: #7986cb, #33b679, #8e24aa, #e67c73, #f6c026, #f5511d, #039be5, #3f51b5, #0b8043, #d60000
+5. Set default reminder to 1440 (1 day) if not specified
+6. Ensure each assignment has a unique ID
+7. if the assignment has no deadline, the all_day field to true in the JSON response. Otherwise, set it to false. Leave the start and end time fields empty.
 Do not infer or generate any data not directly present in the source text.`,
 		Message: []opencode.Message{
 			{
@@ -92,6 +92,7 @@ Do not infer or generate any data not directly present in the source text.`,
           "name": "Assignment Name",
           "description": "Description",
           "due_date": "YYYY-MM-DD",
+					"all_day": false,
           "color": "#hexcolor",
           "start_time": "HH:mm",
           "end_time": "HH:mm",
