@@ -146,6 +146,64 @@ func TestValidateDateTimes(t *testing.T) {
 	}
 }
 
+func TestValidateReminder(t *testing.T) {
+	tests := []testEvent{
+		{
+			name:    "Invalid reminder",
+			wantErr: true,
+			Event: Event{
+				Reminder: 1,
+			},
+		},
+		{
+			name:    "Valid reminder",
+			wantErr: false,
+			Event: Event{
+				Reminder: 0,
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			err := test.Event.validateReminder()
+			assertError(t, test.wantErr, err)
+		})
+	}
+}
+
+func TestValidateColor(t *testing.T) {
+	tests := []testEvent{
+		{
+			name:    "Invalid color",
+			wantErr: true,
+			Event: Event{
+				Color: "#invalidhex",
+			},
+		},
+		{
+			name:    "Valid color",
+			wantErr: false,
+			Event: Event{
+				Color: "#7986cb",
+			},
+		},
+		{
+			name:    "Empty color",
+			wantErr: true,
+			Event: Event{
+				Color: "",
+			},
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			err := test.Event.validateColor()
+			assertError(t, test.wantErr, err)
+		})
+	}
+}
+
 func assertError(t *testing.T, wantErr bool, err error) {
 	if wantErr {
 		if err == nil {

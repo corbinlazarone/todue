@@ -50,3 +50,6 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 
 	rep.WriteSuccessResponse(w, "Course data has been inserted successfully", http.StatusOK)
 }
+
+// TODO: Add function to add event to calendar
+func AddEventToCalendar() {}
