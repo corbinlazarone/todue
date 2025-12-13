@@ -32,6 +32,7 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 			AssignmentID:   val.ID,
 			AssignmentName: val.Name,
 			DueDate:        val.DueDate,
+			AllDay:         val.AllDay,
 			StartTime:      val.StartTime,
 			EndTime:        val.EndTime,
 			Reminder:       val.Reminder,

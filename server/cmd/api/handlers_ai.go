@@ -27,7 +27,7 @@ type CourseData struct {
 	Assignments []Assignment `json:"assignments"`
 }
 
-func (app *application) ExtractCourseData(w http.ResponseWriter, r *http.Request) {
+func (app *application) extractCourseData(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	// Limit request body size to 5MB

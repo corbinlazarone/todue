@@ -118,13 +118,15 @@ func (e *Event) Validate() []EventError {
 		})
 	}
 
-	err = e.validateDateTimes()
-	if err != nil {
-		errs = append(errs, EventError{
-			AssignmentID:   e.AssignmentID,
-			AssignmentName: e.AssignmentName,
-			Errors:         []string{err.Error()},
-		})
+	if !e.AllDay {
+		err = e.validateDateTimes()
+		if err != nil {
+			errs = append(errs, EventError{
+				AssignmentID:   e.AssignmentID,
+				AssignmentName: e.AssignmentName,
+				Errors:         []string{err.Error()},
+			})
+		}
 	}
 
 	err = e.validateReminder()
