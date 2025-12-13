@@ -27,26 +27,31 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	for _, val := range params.Courses[0].Assignments {
-		v := validator.Event{
-			AssignmentID:   val.ID,
-			AssignmentName: val.Name,
-			DueDate:        val.DueDate,
-			AllDay:         val.AllDay,
-			StartTime:      val.StartTime,
-			EndTime:        val.EndTime,
-			Reminder:       val.Reminder,
-			Color:          val.Color,
-		}
+	var allValidationErrors []validator.EventError
 
-		errs := v.Validate()
+	for _, val := range params.Courses {
+		for _, val := range val.Assignments {
+			v := validator.Event{
+				AssignmentID:   val.ID,
+				AssignmentName: val.Name,
+				DueDate:        val.DueDate,
+				AllDay:         val.AllDay,
+				StartTime:      val.StartTime,
+				EndTime:        val.EndTime,
+				Reminder:       val.Reminder,
+				Color:          val.Color,
+			}
 
-		if len(errs) > 0 {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(errs)
-			return
+			errs := v.Validate()
+			allValidationErrors = append(allValidationErrors, errs...)
 		}
+	}
+
+	if len(allValidationErrors) > 0 {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(allValidationErrors)
+		return
 	}
 
 	rep.WriteSuccessResponse(w, "Course data has been inserted successfully", http.StatusOK)
