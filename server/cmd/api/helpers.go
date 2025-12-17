@@ -91,3 +91,37 @@ func sanitizePDFText(input string) error {
 
 	return nil
 }
+
+func ToRFC3339(dateStr, timeStr, tzStr string) (string, error) {
+	loc, err := time.LoadLocation(tzStr)
+	if err != nil {
+		return "", err
+	}
+
+	datetime := dateStr + " " + timeStr
+	t, err := time.ParseInLocation("2006-01-02 15:04", datetime, loc)
+	if err != nil {
+		return "", err
+	}
+
+	return t.Format(time.RFC3339), nil
+}
+
+// ValidateTimeZone validates that the timezone is a valid IANA timezone
+func ValidateTimeZone(timezone string) error {
+	_, err := time.LoadLocation(timezone)
+	if err != nil {
+		return fmt.Errorf("invalid timezone: %s", timezone)
+	}
+	return nil
+}
+
+// AddOneDay adds one day to a date string in YYYY-MM-DD format
+func AddOneDay(dateStr string) (string, error) {
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return "", err
+	}
+	nextDay := date.AddDate(0, 0, 1)
+	return nextDay.Format("2006-01-02"), nil
+}

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
 	"github.com/corbinlazarone/Todue-Actual/cmd/internals/opencode"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/types"
 )
 
 type Assignment struct {
@@ -33,7 +33,7 @@ func (app *application) extractCourseData(w http.ResponseWriter, r *http.Request
 	// Limit request body size to 5MB
 	r.Body = http.MaxBytesReader(w, r.Body, 5<<20)
 
-	var rep models.Response
+	var rep types.Response
 
 	type parameters struct {
 		PDFText string `json:"pdfText"`

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/types"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/time/rate"
 )
@@ -64,7 +64,7 @@ func (app *application) recoverFromPanic(next http.Handler) http.Handler {
 				w.Header().Set("Connetion", "close")
 
 				// show a 500 server error to the user
-				var rep models.Response
+				var rep types.Response
 				app.errLog.Println(err)
 				rep.WriteErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("%s", err))
 			}
@@ -91,7 +91,7 @@ func rateLimter(next http.Handler) http.Handler {
 func requireAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		var rep models.Response
+		var rep types.Response
 
 		// get bearer token from header
 		authHeader := r.Header.Get("Authorization")
