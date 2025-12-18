@@ -7,18 +7,18 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/corbinlazarone/cmovie/cmd/internals/anthropic"
-	"github.com/corbinlazarone/cmovie/cmd/internals/migrations"
-	"github.com/corbinlazarone/cmovie/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/migrations"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/opencode"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib" // to load the pgx driver for database/sql
 )
 
 type application struct {
-	infoLog         *log.Logger
-	errLog          *log.Logger
-	users           *models.UserModel
-	anthropicClient *anthropic.Client
+	infoLog        *log.Logger
+	errLog         *log.Logger
+	users          *models.UserModel
+	opencodeClient *opencode.Client
 }
 
 func main() {
@@ -52,17 +52,17 @@ func main() {
 	}
 
 	// create anthropic client
-	apiKey := os.Getenv("ANTHROPIC_API_KEY")
+	apiKey := os.Getenv("OPENCODE_API_KEY")
 	if apiKey == "" {
-		errLog.Fatal("ANTHROPIC_API_KEY env var not set")
+		errLog.Fatal("OPENCODE_API_KEY env var not set")
 	}
-	anthropicClient := anthropic.NewClient(apiKey)
+	opencodeClient := opencode.NewClient(apiKey)
 
 	app := &application{
-		infoLog:         infoLog,
-		errLog:          errLog,
-		users:           &models.UserModel{DB: dbPool},
-		anthropicClient: anthropicClient,
+		infoLog:        infoLog,
+		errLog:         errLog,
+		users:          &models.UserModel{DB: dbPool},
+		opencodeClient: opencodeClient,
 	}
 
 	srv := &http.Server{

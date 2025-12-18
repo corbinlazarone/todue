@@ -1,11 +1,12 @@
 "use server";
 
+import { getSession } from "@/utils/session";
 import PDFParser from "pdf2json";
 
 function safeDecodeURIComponent(str: string): string {
   try {
     return decodeURIComponent(str);
-  } catch (error) {
+  } catch {
     console.warn("Failed to decode URI component:", str);
     return str;
   }
@@ -44,4 +45,31 @@ export async function extractTextFromPDF(buffer: any): Promise<string> {
       reject(new Error("Failed to parse PDF buffer"));
     }
   });
+}
+
+export async function extractCourseData(test: string) {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  const session = await getSession();
+
+  const rep = await fetch(`${apiUrl}/api/ai/extract`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.token}`,
+    },
+    body: JSON.stringify({
+      pdfText: test,
+    }),
+  });
+
+  if (!rep.ok) {
+    const errorText = await rep.text();
+    console.error("Backend error:", rep.status, errorText);
+    throw new Error(`Failed to extract course data: ${rep.status}`);
+  }
+
+  const data = await rep.json(); // expeted type of Courses: []CourseData
+
+  return data;
 }

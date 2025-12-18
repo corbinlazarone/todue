@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 
-	"github.com/corbinlazarone/cmovie/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/types"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/time/rate"
 )
@@ -53,7 +54,28 @@ func enableCORS(next http.Handler) http.Handler {
 	})
 }
 
-var limiter = rate.NewLimiter(1, 3)
+// Show 500 internal server error to user on request panics
+func (app *application) recoverFromPanic(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// defered function that will alwasy run in the event of a panic as Go unwinds
+		// the stack.
+		defer func() {
+			if err := recover(); err != nil {
+				w.Header().Set("Connetion", "close")
+
+				// show a 500 server error to the user
+				var rep types.Response
+				app.errLog.Println(err)
+				rep.WriteErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("%s", err))
+			}
+		}()
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+// Allow 2 requests per second with burst of 10 for AI extraction
+var limiter = rate.NewLimiter(2, 10)
 
 func rateLimter(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +91,7 @@ func rateLimter(next http.Handler) http.Handler {
 func requireAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		var rep models.Response
+		var rep types.Response
 
 		// get bearer token from header
 		authHeader := r.Header.Get("Authorization")

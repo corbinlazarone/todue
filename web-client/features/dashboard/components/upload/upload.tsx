@@ -2,14 +2,20 @@
 
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { Card } from "@/shared/ui/card";
 
 import AssignmentCard from "./assingment-card";
 import { toast } from "sonner";
-import { useRef } from "react";
-import { extractTextFromPDF } from "../../api/upload/actions";
+import { useRef, useState } from "react";
+import {
+  extractCourseData,
+  extractTextFromPDF,
+} from "../../api/upload/actions";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [disWhileExtract, setDisWhileExtract] = useState(false);
+  const [disBeforeExtract, setDisBeforeExtract] = useState(true);
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -26,16 +32,29 @@ export function Upload() {
     }
 
     try {
+      setDisWhileExtract(true);
+
       const buffer = Buffer.from(await file.arrayBuffer());
+      const text = await extractTextFromPDF(buffer);
 
-      await extractTextFromPDF(buffer);
+      const courseDataPromise = extractCourseData(text);
 
-      // TODO: send to go api to claude
+      toast.promise(courseDataPromise, {
+        loading: "Uploading...",
+        success: () => `${file.name} has been uploaded!`,
+        error: "Error",
+      });
 
-      toast.success("Extracted text from PDF");
-    } catch (error) {
+      const courseData = await courseDataPromise;
+
+      // NOTE: console log
+      console.log(JSON.stringify(courseData, null, 2));
+    } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
+    } finally {
+      setDisBeforeExtract(false);
+      setDisWhileExtract(false);
     }
   }
 
@@ -49,8 +68,29 @@ export function Upload() {
           accept=".pdf"
           className="cursor-pointer w-auto"
         />
-        <Button onClick={() => handleExtract()}>Extract</Button>
+        <Button
+          disabled={disWhileExtract || disWhileExtract}
+          onClick={() => handleExtract()}
+        >
+          Extract
+        </Button>
+        <Button
+          variant="secondary"
+          disabled={disBeforeExtract || disWhileExtract}
+          onClick={() => toast.info("Not implemented")}
+        >
+          Sync to Google Calendar
+        </Button>
       </div>
+
+      {!disBeforeExtract && (
+        <Card className="p-3 text-sm border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200">
+          {/* TODO: Tell the user that we will use their primary google calendar.
+             show them the name of that calendar before sumbiting.*/}
+          Please review the extracted assignments below for any mistakes before
+          syncing to your Google Calendar.
+        </Card>
+      )}
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -61,9 +101,10 @@ export function Upload() {
           </div>
           <Button
             variant="outline"
-            onClick={() => toast.info("Not implmented")}
+            disabled={disBeforeExtract || disWhileExtract}
+            onClick={() => toast.info("Not implemented")}
           >
-            Sync to Google Calendar
+            Add new Assignment
           </Button>
         </div>
         <AssignmentCard />

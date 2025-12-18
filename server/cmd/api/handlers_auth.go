@@ -2,11 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/corbinlazarone/cmovie/cmd/internals/auth"
-	"github.com/corbinlazarone/cmovie/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/auth"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/types"
 )
 
 func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,7 +14,7 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	// Limit request body size to 1 MB
 	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 
-	var rep models.Response
+	var rep types.Response
 
 	type parameters struct {
 		GoogleJWT string `json:"googleJWT"`
@@ -47,7 +46,6 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokenString, err := generateJWT(user)
-	fmt.Println(tokenString)
 	if err != nil {
 		app.errLog.Println(err)
 		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")

@@ -13,12 +13,13 @@ func (app *application) routes() http.Handler {
 	// public routes
 	router.Handler(http.MethodGet, "/", http.HandlerFunc(app.health))
 	router.Handler(http.MethodPost, "/api/auth/login", http.HandlerFunc(app.loginHandler))
+	router.Handler(http.MethodPost, "/api/event/save", http.HandlerFunc(app.insertCourseDataHandler))
 
 	// Protected routes
 	protected := alice.New(requireAuth)
-	router.Handler(http.MethodPost, "/api/ai/extract", protected.ThenFunc(app.ExtractCourseData))
+	router.Handler(http.MethodPost, "/api/ai/extract", protected.ThenFunc(app.extractCourseData))
 
-	std := alice.New(enableCORS, secureHeaders, rateLimter)
+	std := alice.New(enableCORS, secureHeaders, rateLimter, app.recoverFromPanic)
 
 	return std.Then(router)
 }

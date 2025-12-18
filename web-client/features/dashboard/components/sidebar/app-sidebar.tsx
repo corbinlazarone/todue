@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { SessionData } from "@/utils/session";
 import {
@@ -52,8 +53,10 @@ export function AppSidebar({ userData, ...props }: AppSidebarProps) {
           <SidebarMenuItem>
             <SidebarMenuButton asChild size="lg">
               <Link href="/">
-                <img
+                <Image
                   src="/icon.ico"
+                  width={20}
+                  height={20}
                   className="size-5 group-data-[collapsible=icon]:size-6"
                   alt="Todue"
                 />

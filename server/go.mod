@@ -1,4 +1,4 @@
-module github.com/corbinlazarone/cmovie
+module github.com/corbinlazarone/Todue-Actual
 
 go 1.24.0
 
