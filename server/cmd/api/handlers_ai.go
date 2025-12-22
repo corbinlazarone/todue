@@ -28,6 +28,9 @@ type CourseData struct {
 }
 
 func (app *application) extractCourseData(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+
 	defer r.Body.Close()
 
 	// Limit request body size to 5MB
@@ -109,7 +112,7 @@ Syllabus text:
 		},
 	}
 
-	aiResp, err := app.opencodeClient.CreateMessage(aiReq)
+	aiResp, err := app.opencodeClient.CreateMessage(ctx, aiReq)
 	if err != nil {
 		app.errLog.Printf("AI extraction failed: %v", err)
 		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Failed to extract course data")

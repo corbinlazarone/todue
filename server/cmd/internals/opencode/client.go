@@ -2,6 +2,7 @@ package opencode
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -47,7 +48,7 @@ func NewClient(apiKey string) *Client {
 	}
 }
 
-func (c *Client) CreateMessage(req OpenCodeRequest) (*OpenCodeResponse, error) {
+func (c *Client) CreateMessage(ctx context.Context, req OpenCodeRequest) (*OpenCodeResponse, error) {
 	// Convert to OpenAI-compatible format for Grok Code Fast 1
 	openAIReq := c.convertToOpenAIFormat(req)
 
@@ -57,7 +58,7 @@ func (c *Client) CreateMessage(req OpenCodeRequest) (*OpenCodeResponse, error) {
 		return nil, err
 	}
 
-	httpReq, err := http.NewRequest("POST", c.baseURL+"/chat/completions", bytes.NewBuffer(jsonData))
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", c.baseURL+"/chat/completions", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +104,7 @@ func (c *Client) CreateMessage(req OpenCodeRequest) (*OpenCodeResponse, error) {
 }
 
 // convertToOpenAIFormat converts our request format to OpenAI-compatible format
-func (c *Client) convertToOpenAIFormat(req OpenCodeRequest) map[string]interface{} {
+func (c *Client) convertToOpenAIFormat(req OpenCodeRequest) map[string]any {
 	messages := []map[string]string{}
 
 	// Add system message if present
@@ -122,7 +123,7 @@ func (c *Client) convertToOpenAIFormat(req OpenCodeRequest) map[string]interface
 		})
 	}
 
-	return map[string]interface{}{
+	return map[string]any{
 		"model":       "grok-code", // Grok Code Fast 1 model ID for free usage for now
 		"messages":    messages,
 		"max_tokens":  req.MaxTokens,

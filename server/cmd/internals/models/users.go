@@ -28,18 +28,18 @@ type UserModel struct {
 // CheckIfExists checks if a user with the given googleID or email exists in the database.
 // If not, it creates a new user.
 // If user exists by email but has different google_id, it updates the google_id.
-func (u *UserModel) CheckIfExists(claims auth.GoogleClaims) (User, error) {
+func (u *UserModel) CheckIfExists(ctx context.Context, claims auth.GoogleClaims) (User, error) {
 	statement := `SELECT id, email, email_verified, first_name, last_name, picture, created_at, updated_at
                   FROM users
                   WHERE email = $1`
 
-	rows, err := u.DB.Query(context.Background(), statement, claims.Email)
+	rows, err := u.DB.Query(ctx, statement, claims.Email)
 	user, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[User])
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			// User doesn't exist - create new one
-			newUser, err := u.createNewUser(claims)
+			newUser, err := u.createNewUser(ctx, claims)
 			if err != nil {
 				return User{}, err
 			}
@@ -51,13 +51,13 @@ func (u *UserModel) CheckIfExists(claims auth.GoogleClaims) (User, error) {
 	return user, nil
 }
 
-func (u *UserModel) createNewUser(claims auth.GoogleClaims) (User, error) {
+func (u *UserModel) createNewUser(ctx context.Context, claims auth.GoogleClaims) (User, error) {
 	statement := `INSERT INTO users (email, email_verified, first_name, last_name, picture)
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING id, email, email_verified, first_name, last_name, picture, created_at, updated_at`
 
 	var user User
-	rows, err := u.DB.Query(context.Background(), statement,
+	rows, err := u.DB.Query(ctx, statement,
 		claims.Email,
 		claims.EmailVerified,
 		claims.FirstName,

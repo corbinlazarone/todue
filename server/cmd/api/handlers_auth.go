@@ -9,6 +9,9 @@ import (
 )
 
 func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+
 	defer r.Body.Close()
 
 	// Limit request body size to 1 MB
@@ -38,7 +41,7 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := app.users.CheckIfExists(claims)
+	user, err := app.users.CheckIfExists(ctx, claims)
 	if err != nil {
 		app.errLog.Println(err)
 		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")
