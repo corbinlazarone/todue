@@ -6,7 +6,7 @@ export interface SessionData {
   isLoggedIn: boolean;
   userData: {
     email: string;
-    fistName: string | null;
+    firstName: string | null;
     lastName: string | null;
     picture: string | null;
   };
@@ -16,7 +16,7 @@ export const defaultSession: SessionData = {
   token: "",
   isLoggedIn: false,
   userData: {
-    fistName: "",
+    firstName: "",
     lastName: "",
     email: "",
     picture: "",
@@ -47,7 +47,7 @@ export async function getSession() {
     session.token = "";
     session.isLoggedIn = false;
     session.userData = {
-      fistName: "",
+      firstName: "",
       lastName: "",
       email: "",
       picture: "",

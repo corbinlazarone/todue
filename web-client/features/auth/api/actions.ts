@@ -25,19 +25,14 @@ export async function login(googleJWT: string | undefined) {
   if (!rep.ok) {
     const errorText = await rep.text();
     console.error("Backend error:", rep.status, errorText);
-    throw new Error(`Failed to login: ${rep.status}`);
+    throw new Error();
   }
 
   const data: defaultResponse = await rep.json();
-  if (data.type === "success") {
-    const token = data.message;
-    await saveUsersSession(token);
+  await saveUserSession(data.message);
 
-    revalidatePath("/");
-    revalidatePath("/dashboard");
-  } else {
-    throw new Error("Failed to login");
-  }
+  revalidatePath("/");
+  revalidatePath("/dashboard");
 }
 
 export async function logout() {
@@ -52,7 +47,7 @@ export async function logout() {
 }
 
 // decode our jwt so we can get user data from it.
-async function saveUsersSession(token: string) {
+async function saveUserSession(token: string) {
   try {
     const decodedToken = jwtDecode<AppJWTPayload>(token);
 
@@ -61,14 +56,14 @@ async function saveUsersSession(token: string) {
     session.isLoggedIn = true;
     session.userData = {
       email: decodedToken.email,
-      fistName: decodedToken.first_name,
+      firstName: decodedToken.first_name,
       lastName: decodedToken.last_name,
       picture: decodedToken.picture,
     };
 
     await session.save();
   } catch (err) {
-    console.error("Failed to decode token", err);
-    throw new Error("Invalid token");
+    console.error("Failed to decode token: ", err);
+    throw new Error();
   }
 }
