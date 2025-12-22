@@ -42,7 +42,7 @@ export function LoginForm({
                     }
                   }}
                   onError={() => {
-                    console.log("Login Failed");
+                    toast.error("Failed to login. Try again or contact us.");
                   }}
                   theme="outline"
                   size="large"

@@ -3,14 +3,12 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
-
-import AssignmentCard from "./assingment-card";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
-import {
-  extractCourseData,
-  extractTextFromPDF,
-} from "../../api/upload/actions";
+import { extractCourseData } from "../../api/upload/actions";
+import { extractTextFromPDF } from "../../api/upload/helpers";
+
+import AssignmentCard from "./assingment-card";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
