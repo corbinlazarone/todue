@@ -36,12 +36,12 @@ export function NavUser({ user }: { user: SessionData["userData"] }) {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={user.picture || ""}
-                  alt={user.fistName || "default"}
+                  alt={user.firstName || "default"}
                 />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.fistName}</span>
+                <span className="truncate font-medium">{user.firstName}</span>
                 <span className="text-muted-foreground truncate text-xs">
                   {user.email}
                 </span>
@@ -60,13 +60,13 @@ export function NavUser({ user }: { user: SessionData["userData"] }) {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
                     src={user.picture || ""}
-                    alt={user.fistName || ""}
+                    alt={user.firstName || ""}
                   />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
-                    {user.fistName || ""} {user.lastName || ""}
+                    {user.firstName || ""} {user.lastName || ""}
                   </span>
                   <span className="text-muted-foreground truncate text-xs">
                     {user.email}

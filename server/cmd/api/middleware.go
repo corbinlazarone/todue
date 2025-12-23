@@ -34,9 +34,9 @@ func secureHeaders(next http.Handler) http.Handler {
 func enableCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		allowedOrigin := os.Getenv("CORS_ALLOWED_ORIGIN")
+		allowedOrigin := os.Getenv("WEB_CLIENT_URL")
 		if allowedOrigin == "" {
-			log.Fatal("CORS_ALLOWED_ORIGIN env var not set")
+			log.Fatal("WEB_CLIENT_URL env var not set")
 		}
 
 		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
