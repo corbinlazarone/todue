@@ -20,7 +20,7 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	var rep types.Response
 
 	type parameters struct {
-		GoogleJWT string `json:"googleJWT"`
+		AuthCode string `json:"authCode"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -33,21 +33,46 @@ func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// validate google jwt
-	claims, err := auth.ValidateGoogleJWT(params.GoogleJWT)
-	if err != nil {
-		app.errLog.Println(err)
-		rep.WriteErrorResponse(w, http.StatusBadRequest, "Invalid Google JWT")
+	if params.AuthCode == "" {
+		rep.WriteErrorResponse(w, http.StatusBadRequest, "Authorization code is required")
 		return
 	}
 
-	user, err := app.users.CheckIfExists(ctx, claims)
+	// Exchanged auth code for access and refresh token
+	tokens, err := auth.ExchangeCodeForTokens(ctx, params.AuthCode)
 	if err != nil {
 		app.errLog.Println(err)
 		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")
 		return
 	}
 
+	// Get user information from google userinfo endpoint
+	userInfo, err := auth.GetUserInfo(tokens.AccessToken)
+	if err != nil {
+		app.errLog.Println(err)
+		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")
+		return
+	}
+
+	// Create or update user if already exists
+	user, err := app.users.CheckIfExists(ctx, userInfo)
+	if err != nil {
+		app.errLog.Println(err)
+		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")
+		return
+	}
+
+	// if their is a refresh token present add it to user entry
+	if tokens.RefreshToken != "" {
+		err := app.users.UpdateRefreshToken(ctx, user.Email, tokens.RefreshToken)
+		if err != nil {
+			app.errLog.Println(err)
+			rep.WriteErrorResponse(w, http.StatusInternalServerError, "Authentication failed")
+			return
+		}
+	}
+
+	// Generate todue JWT for client
 	tokenString, err := generateJWT(user)
 	if err != nil {
 		app.errLog.Println(err)

@@ -75,14 +75,14 @@ func (u *UserModel) GetByID(ctx context.Context, userID string) (*User, error) {
 	return &user, nil
 }
 
-func (u *UserModel) UpdateRefreshToken(ctx context.Context, userID string, refreshToken string) error {
+func (u *UserModel) UpdateRefreshToken(ctx context.Context, email string, refreshToken string) error {
 	encryptedToken, err := auth.EncryptRefreshToken(refreshToken)
 	if err != nil {
 		return fmt.Errorf("failed to encrypt refresh token: %w", err)
 	}
 
-	statement := `UPDATE users SET google_refresh_token = $1, updated_at = NOW() WHERE id = $2`
-	_, err = u.DB.Exec(ctx, statement, encryptedToken, userID)
+	statement := `UPDATE users SET google_refresh_token = $1, updated_at = NOW() WHERE email = $2`
+	_, err = u.DB.Exec(ctx, statement, encryptedToken, email)
 	return err
 }
 
