@@ -87,9 +87,9 @@ func (u *UserModel) UpdateRefreshToken(ctx context.Context, email string, refres
 }
 
 func (u *UserModel) createNewUser(ctx context.Context, userInfo auth.GoogleUserInfo) (User, error) {
-	statement := `INSERT INTO users (email, email_verified, first_name, last_name, picture)
-                VALUES ($1, $2, $3, $4, $5)
-                RETURNING id, email, email_verified, first_name, last_name, picture, created_at, updated_at`
+	statement := `INSERT INTO users (email, email_verified, first_name, last_name, picture, google_refresh_token)
+                 VALUES ($1, $2, $3, $4, $5, $6)
+                 RETURNING id, email, email_verified, first_name, last_name, picture, created_at, updated_at, google_refresh_token`
 
 	var user User
 	rows, err := u.DB.Query(ctx, statement,
@@ -98,6 +98,7 @@ func (u *UserModel) createNewUser(ctx context.Context, userInfo auth.GoogleUserI
 		userInfo.FirstName,
 		userInfo.LastName,
 		userInfo.Picture,
+		"",
 	)
 	if err != nil {
 		return User{}, err

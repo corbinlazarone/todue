@@ -29,6 +29,7 @@ func OAuth2Config() *oauth2.Config {
 	return &oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
+		RedirectURL:  "postmessage",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/calendar",
 			"https://www.googleapis.com/auth/userinfo.email",

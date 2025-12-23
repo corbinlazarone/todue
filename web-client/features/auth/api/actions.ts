@@ -5,11 +5,12 @@ import { AppJWTPayload, defaultResponse } from "../types";
 import { revalidatePath } from "next/cache";
 import { jwtDecode } from "jwt-decode";
 
-export async function login(googleJWT: string | undefined) {
+export async function login(authCode: string | undefined) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  if (!googleJWT) {
-    throw new Error("Google JWT undefined");
+  if (!authCode) {
+    console.error("AuthCode is undefined");
+    throw new Error();
   }
 
   const rep = await fetch(`${apiUrl}/api/auth/login`, {
@@ -18,7 +19,7 @@ export async function login(googleJWT: string | undefined) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      googleJWT,
+      authCode,
     }),
   });
 
