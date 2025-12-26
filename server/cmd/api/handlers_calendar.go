@@ -1,14 +1,17 @@
 package main
 
 import (
-	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
 	"net/http"
 
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
+	"github.com/corbinlazarone/Todue-Actual/cmd/internals/services"
 	"github.com/corbinlazarone/Todue-Actual/cmd/internals/types"
 	"github.com/corbinlazarone/Todue-Actual/cmd/internals/validator"
+	"google.golang.org/api/calendar/v3"
 )
 
 func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +125,12 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 			event.ColorId = assVal.Color
 			event.Reminders.Overrides[0].Minutes = assVal.Reminder
 
-			err := addEventToCalendar(event)
+			err := addEventToCalendar(
+				r.Context(),
+				app.users,
+				event,
+				assVal.AllDay,
+			)
 			if err != nil {
 				app.errLog.Println(err)
 				rep.WriteErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")
@@ -134,38 +142,81 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 	rep.WriteSuccessResponse(w, "Course data has been inserted successfully", http.StatusOK)
 }
 
-func addEventToCalendar(event *types.CalendarEvent) error {
-	url := "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+func addEventToCalendar(
+	ctx context.Context,
+	userModel *models.UserModel,
+	event *types.CalendarEvent,
+	allDay bool,
+) error {
 
-	accessToken := ""
+	userID := ctx.Value("userID").(string)
 
-	jsonData, err := json.Marshal(event)
+	user, err := userModel.GetByID(ctx, userID)
 	if err != nil {
-		return fmt.Errorf("error marshaling event: %w", err)
+		return err
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		return fmt.Errorf("error creating request: %w", err)
+	if user.GoogleRefreshToken == "" {
+		return errors.New("user's google refresh token is  or empty")
 	}
 
-	req.Header.Set("Authorization", "Bearer "+accessToken)
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	calendarSrv, err := services.GoogleCalendarService(
+		ctx,
+		userModel,
+		userID,
+		user.GoogleRefreshToken,
+	)
 	if err != nil {
-		return fmt.Errorf("error making request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("error reading response: %w", err)
+		return err
 	}
 
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf("API error (status %d): %s", resp.StatusCode, string(body))
+	var newEvent *calendar.Event
+
+	if !allDay {
+		newEvent = &calendar.Event{
+			Summary:     event.Summary,
+			Description: event.Description,
+			Start: &calendar.EventDateTime{
+				DateTime: event.Start.DateTime,
+				TimeZone: event.Start.TimeZone,
+			},
+			End: &calendar.EventDateTime{
+				DateTime: event.End.DateTime,
+				TimeZone: event.End.TimeZone,
+			},
+			ColorId: ConvertToColorID(event.ColorId),
+			Reminders: &calendar.EventReminders{
+				UseDefault: event.Reminders.UseDefault,
+				Overrides: []*calendar.EventReminder{
+					{
+						Method:  event.Reminders.Overrides[0].Method,
+						Minutes: int64(event.Reminders.Overrides[0].Minutes),
+					},
+				},
+			},
+		}
+	} else {
+		newEvent = &calendar.Event{
+			Summary:     event.Summary,
+			Description: event.Description,
+			Start: &calendar.EventDateTime{
+				Date: event.Start.Date,
+			},
+			End: &calendar.EventDateTime{
+				Date: event.End.Date,
+			},
+			ColorId: ConvertToColorID(event.ColorId),
+			Reminders: &calendar.EventReminders{
+				UseDefault: true,
+			},
+		}
+	}
+
+	_, err = calendarSrv.Events.Insert("primary", newEvent).
+		Context(ctx).
+		Do()
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -61,9 +61,9 @@ func (u *UserModel) GetByID(ctx context.Context, userID string) (*User, error) {
 		&user.FirstName,
 		&user.LastName,
 		&user.Picture,
-		&user.GoogleRefreshToken,
 		&user.CreatedAt,
 		&user.UpdatedAt,
+		&user.GoogleRefreshToken,
 	)
 	if err != nil {
 		return nil, err
