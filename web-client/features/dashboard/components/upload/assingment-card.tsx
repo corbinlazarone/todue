@@ -1,7 +1,7 @@
 "use client";
 
-import sampleData from "@/public/sample-course-data.json";
 import { Button } from "@/shared/ui/button";
+import { Assignment } from "../../types";
 import {
   Card,
   CardAction,
@@ -12,32 +12,12 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { AlertCircle, Calendar, Clock, Edit2, Trash2 } from "lucide-react";
-import { useState } from "react";
 
-type Assignment = {
-  id: number;
-  name: string;
-  description: string;
-  due_date: string;
-  color: string;
-  start_time: string;
-  end_time: string;
-  reminder: number;
-};
-
-export default function AssignmentCard() {
-  const [assignments, setAssignments] = useState(
-    sampleData.courses.flatMap((course) => course.assignments),
-  );
-
-  const handleEdit = (assignment: Assignment) => {
-    console.log("Edit:", assignment);
-  };
-
-  const handleDelete = (id: number) => {
-    setAssignments((prev) => prev.filter((a) => a.id !== id));
-  };
-
+export default function AssignmentCard({
+  assignments,
+}: {
+  assignments: Assignment[];
+}) {
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
       month: "short",
@@ -79,7 +59,7 @@ export default function AssignmentCard() {
               <CardAction>
                 <div className="flex items-center space-x-0.5">
                   <Button
-                    onClick={() => handleEdit(assignment)}
+                    /* onClick={() => handleEdit(assignment)} */
                     variant="ghost"
                     size="icon-sm"
                     className="text-gray-400 hover:text-indigo-600 h-7 w-7"
@@ -87,7 +67,7 @@ export default function AssignmentCard() {
                     <Edit2 className="h-3 w-3" />
                   </Button>
                   <Button
-                    onClick={() => handleDelete(assignment.id)}
+                    /* onClick={() => handleDelete(assignment.id)} */
                     variant="ghost"
                     size="icon-sm"
                     className="text-gray-400 hover:text-red-600 h-7 w-7"

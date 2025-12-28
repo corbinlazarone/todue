@@ -3,6 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
+import { Courses } from "../../types";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { extractCourseData } from "../../api/upload/actions";
@@ -12,8 +13,9 @@ import AssignmentCard from "./assingment-card";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [disWhileExtract, setDisWhileExtract] = useState(false);
-  const [disBeforeExtract, setDisBeforeExtract] = useState(true);
+  const [extractedCourseData, setExtractedCourseData] = useState<Courses>();
+  const [disWhileExtract, setDisWhileExtract] = useState<boolean>(false);
+  const [disBeforeExtract, setDisBeforeExtract] = useState<boolean>(true);
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -45,8 +47,7 @@ export function Upload() {
 
       const courseData = await courseDataPromise;
 
-      // NOTE: console log
-      console.log(JSON.stringify(courseData, null, 2));
+      setExtractedCourseData(courseData);
     } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
@@ -83,29 +84,40 @@ export function Upload() {
 
       {!disBeforeExtract && (
         <Card className="p-3 text-sm border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200">
-          {/* TODO: Tell the user that we will use their primary google calendar.
-             show them the name of that calendar before sumbiting.*/}
           Please review the extracted assignments below for any mistakes before
-          syncing to your Google Calendar.
+          syncing to your primary Google Calendar.
         </Card>
       )}
 
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Your Extracted Assignments
-            </h2>
+        {extractedCourseData &&
+        extractedCourseData.courses &&
+        extractedCourseData.courses.length > 0 ? (
+          <>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {extractedCourseData.courses[0].course_name}
+                </h2>
+              </div>
+              <Button
+                variant="outline"
+                disabled={disBeforeExtract || disWhileExtract}
+                onClick={() => toast.info("Not implemented")}
+              >
+                Add new Assignment
+              </Button>
+            </div>
+            <AssignmentCard
+              assignments={extractedCourseData.courses[0].assignments}
+            />
+          </>
+        ) : extractedCourseData ? (
+          <div className="text-red-500 p-4 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded">
+            Error: Failed to extract courses from the PDF. Please try again or
+            contact support if the issue persists.
           </div>
-          <Button
-            variant="outline"
-            disabled={disBeforeExtract || disWhileExtract}
-            onClick={() => toast.info("Not implemented")}
-          >
-            Add new Assignment
-          </Button>
-        </div>
-        <AssignmentCard />
+        ) : null}
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 "use server";
 
 import { getSession } from "@/utils/session";
+import { Courses } from "../../types";
 
-export async function extractCourseData(test: string) {
+export async function extractCourseData(text: string): Promise<Courses> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const session = await getSession();
@@ -14,7 +15,7 @@ export async function extractCourseData(test: string) {
       Authorization: `Bearer ${session.token}`,
     },
     body: JSON.stringify({
-      pdfText: test,
+      pdfText: text,
     }),
   });
 
@@ -24,7 +25,7 @@ export async function extractCourseData(test: string) {
     throw new Error();
   }
 
-  const data = await rep.json(); // expeted type of Courses: []CourseData
+  const data: Courses = await rep.json();
 
   return data;
 }

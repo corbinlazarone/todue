@@ -1,5 +1,6 @@
 "use server";
 
+import { Buffer } from "buffer";
 import PDFParser from "pdf2json";
 
 function safeDecodeURIComponent(str: string): string {
@@ -11,8 +12,8 @@ function safeDecodeURIComponent(str: string): string {
   }
 }
 
-export async function extractTextFromPDF(buffer: any): Promise<string> {
-  const actualBuffer = Buffer.from(buffer.data || buffer);
+export async function extractTextFromPDF(buffer: Buffer): Promise<string> {
+  const actualBuffer = Buffer.from(buffer);
 
   return new Promise((resolve, reject) => {
     const pdfParser = new PDFParser(null, true);
