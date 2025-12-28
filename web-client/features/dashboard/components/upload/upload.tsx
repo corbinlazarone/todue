@@ -59,21 +59,19 @@ export function Upload() {
   }
 
   function handleAssignmentDelete(id: number) {
-    if (confirm("Are you sure you want to delete this assignment?")) {
-      setExtractedCourseData((prev) => {
-        if (!prev || !prev.courses || prev.courses.length === 0) return prev;
+    setExtractedCourseData((prev) => {
+      if (!prev || !prev.courses || prev.courses.length === 0) return prev;
 
-        return {
-          ...prev,
-          courses: prev.courses.map((course) => ({
-            ...course,
-            assignments: course.assignments.filter(
-              (assignment) => assignment.id !== id,
-            ),
-          })),
-        };
-      });
-    }
+      return {
+        ...prev,
+        courses: prev.courses.map((course) => ({
+          ...course,
+          assignments: course.assignments.filter(
+            (assignment) => assignment.id !== id,
+          ),
+        })),
+      };
+    });
   }
 
   return (

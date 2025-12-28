@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/shared/ui/card";
 import { AlertCircle, Calendar, Clock, Edit2, Trash2 } from "lucide-react";
+import { ConfirmDialog } from "./confirm-dialog";
 
 export default function AssignmentCard({
   assignments,
@@ -77,14 +78,19 @@ export default function AssignmentCard({
                     >
                       <Edit2 className="h-3 w-3" />
                     </Button>
-                    <Button
-                      onClick={() => onDelete(assignment.id)}
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-gray-400 hover:text-red-600 h-7 w-7"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
+                    <ConfirmDialog
+                      descrip="Are you sure you want to delete this assignment? This action cannot be undone."
+                      onConfirm={() => onDelete(assignment.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-gray-400 hover:text-red-600 h-7 w-7"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      }
+                    />
                   </div>
                 </CardAction>
               </CardHeader>
