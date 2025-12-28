@@ -48,8 +48,6 @@ export function Upload() {
 
       const courseData = await courseDataPromise;
 
-      console.log(JSON.stringify(courseData, null, 2));
-
       setExtractedCourseData(courseData);
     } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");

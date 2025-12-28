@@ -26,8 +26,6 @@ export default function AssignmentCard({
     });
   };
 
-  // TODO: fix this function to format the time correctly based on the
-  // users timezone.
   const formatTime = (time: string) => {
     return new Date(`2000-01-01T${time}`).toLocaleTimeString("en-US", {
       hour: "numeric",
