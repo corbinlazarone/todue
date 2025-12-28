@@ -26,6 +26,8 @@ export default function AssignmentCard({
     });
   };
 
+  // TODO: fix this function to format the time correctly based on the
+  // users timezone.
   const formatTime = (time: string) => {
     return new Date(`2000-01-01T${time}`).toLocaleTimeString("en-US", {
       hour: "numeric",
@@ -34,11 +36,19 @@ export default function AssignmentCard({
     });
   };
 
-  const formatReminder = (hours: number) => {
-    if (hours >= 24) {
-      return `${hours / 24} day${hours / 24 > 1 ? "s" : ""} before`;
+  const formatReminder = (minutes: number) => {
+    if (minutes === 0) {
+      return "At time of event";
     }
-    return `${hours} hour${hours > 1 ? "s" : ""} before`;
+    if (minutes < 60) {
+      return `${minutes} minute${minutes > 1 ? "s" : ""} before`;
+    }
+    if (minutes < 1440) {
+      const hours = minutes / 60;
+      return `${hours} hour${hours > 1 ? "s" : ""} before`;
+    }
+    const days = minutes / 1440;
+    return `${days} day${days > 1 ? "s" : ""} before`;
   };
 
   return (
