@@ -15,8 +15,10 @@ import { AlertCircle, Calendar, Clock, Edit2, Trash2 } from "lucide-react";
 
 export default function AssignmentCard({
   assignments,
+  onDelete,
 }: {
   assignments: Assignment[];
+  onDelete(id: number): void;
 }) {
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -76,7 +78,7 @@ export default function AssignmentCard({
                       <Edit2 className="h-3 w-3" />
                     </Button>
                     <Button
-                      /* onClick={() => handleDelete(assignment.id)} */
+                      onClick={() => onDelete(assignment.id)}
                       variant="ghost"
                       size="icon-sm"
                       className="text-gray-400 hover:text-red-600 h-7 w-7"

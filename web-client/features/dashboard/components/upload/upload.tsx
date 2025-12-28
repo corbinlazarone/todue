@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
-import { Courses } from "../../types";
+import { Assignment, Courses } from "../../types";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { extractCourseData } from "../../api/upload/actions";
@@ -55,6 +55,24 @@ export function Upload() {
     } finally {
       setDisBeforeExtract(false);
       setDisWhileExtract(false);
+    }
+  }
+
+  function handleAssignmentDelete(id: number) {
+    if (confirm("Are you sure you want to delete this assignment?")) {
+      setExtractedCourseData((prev) => {
+        if (!prev || !prev.courses || prev.courses.length === 0) return prev;
+
+        return {
+          ...prev,
+          courses: prev.courses.map((course) => ({
+            ...course,
+            assignments: course.assignments.filter(
+              (assignment) => assignment.id !== id,
+            ),
+          })),
+        };
+      });
     }
   }
 
@@ -111,6 +129,7 @@ export function Upload() {
             </div>
             <AssignmentCard
               assignments={extractedCourseData.courses[0].assignments}
+              onDelete={handleAssignmentDelete}
             />
           </>
         ) : extractedCourseData ? (
