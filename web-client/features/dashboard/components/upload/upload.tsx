@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { extractCourseData } from "../../api/upload/actions";
 import { extractTextFromPDF } from "../../api/upload/helpers";
+import { FileText } from "lucide-react";
 
 import AssignmentCard from "./assingment-card";
 
@@ -46,6 +47,8 @@ export function Upload() {
       });
 
       const courseData = await courseDataPromise;
+
+      console.log(JSON.stringify(courseData, null, 2));
 
       setExtractedCourseData(courseData);
     } catch {
@@ -117,7 +120,22 @@ export function Upload() {
             Error: Failed to extract courses from the PDF. Please try again or
             contact support if the issue persists.
           </div>
-        ) : null}
+        ) : (
+          <Card className="p-8 text-center border-dashed border-2 border-gray-300 dark:border-gray-600">
+            <div className="flex flex-col items-center space-y-4">
+              <FileText className="w-12 h-12 text-gray-400" />
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                  Ready to Extract Assignments
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Select a PDF syllabus and click Extract to see your
+                  assignments here
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );
