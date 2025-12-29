@@ -125,3 +125,24 @@ func AddOneDay(dateStr string) (string, error) {
 	nextDay := date.AddDate(0, 0, 1)
 	return nextDay.Format("2006-01-02"), nil
 }
+
+// For google calendar api call
+func ConvertToColorID(hexColor string) string {
+	colorOptions := map[string]string{
+		"#7986cb": "1",  // Blue
+		"#33b679": "2",  // Green
+		"#8e24aa": "3",  // Purple
+		"#e67c73": "4",  // Red
+		"#f6c026": "5",  // Yellow
+		"#f5511d": "6",  // Orange
+		"#039be5": "7",  // Turquoise
+		"#616161": "8",  // Gray
+		"#3f51b5": "9",  // Bold Blue
+		"#0b8043": "10", // Bold Green
+		"#d60000": "11", // Bold Red
+	}
+
+	val, _ := colorOptions[hexColor]
+
+	return val
+}

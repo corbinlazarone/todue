@@ -27,11 +27,8 @@ type UserModel struct {
 	DB *pgxpool.Pool
 }
 
-// CheckIfExists checks if a user with the given googleID or email exists in the database.
-// If not, it creates a new user.
-// If user exists by email but has different google_id, it updates the google_id.
 func (u *UserModel) CheckIfExists(ctx context.Context, userInfo auth.GoogleUserInfo) (User, error) {
-	statement := `SELECT id, email, email_verified, first_name, last_name, picture, created_at, updated_at 
+	statement := `SELECT id, email, email_verified, first_name, last_name, picture, created_at, updated_at, google_refresh_token 
                   FROM users
                   WHERE email = $1`
 
@@ -64,9 +61,9 @@ func (u *UserModel) GetByID(ctx context.Context, userID string) (*User, error) {
 		&user.FirstName,
 		&user.LastName,
 		&user.Picture,
-		&user.GoogleRefreshToken,
 		&user.CreatedAt,
 		&user.UpdatedAt,
+		&user.GoogleRefreshToken,
 	)
 	if err != nil {
 		return nil, err

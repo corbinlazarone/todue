@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -116,7 +117,16 @@ func requireAuth(next http.Handler) http.Handler {
 			return
 		}
 
+		userID, err := token.Claims.GetSubject()
+		if err != nil {
+			log.Print("WARNGING: Couldn't get user id from token")
+			rep.WriteErrorResponse(w, http.StatusUnauthorized, "Internal Server Error")
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), "userID", userID)
+
 		// token is valid - continue with the request
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
