@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
-import { Assignment, Courses } from "../../types";
+import { Courses } from "../../types";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { extractCourseData } from "../../api/upload/actions";
