@@ -4,7 +4,7 @@
   </a>
   <h1 align="center"><b>Todue</b></h1>
 </p>
-<p align="center">AI Syllabus to Calendar automation</p>
+<p align="center">About AI syllabus to calendar automation tool for students</p>
 <p align="center">
   <a href="https://trytodue.com"><b>Visit Todue →</b></a>
 </p>
