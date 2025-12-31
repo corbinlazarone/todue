@@ -20,6 +20,7 @@ import {
   SidebarGroup,
 } from "@/shared/ui/sidebar";
 import { NavUser } from "./nav-user";
+import { useDashboard } from "../../context";
 
 const navItems = [
   {
@@ -45,9 +46,14 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 
 export function AppSidebar({ userData, ...props }: AppSidebarProps) {
   const pathname = usePathname();
+  const { sidebarDisabled } = useDashboard();
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar
+      collapsible="offcanvas"
+      className={sidebarDisabled ? "pointer-events-none opacity-50" : ""}
+      {...props}
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
