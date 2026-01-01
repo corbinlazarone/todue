@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/migrations"
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/opencode"
+	"github.com/corbinlazarone/todue/cmd/internals/migrations"
+	"github.com/corbinlazarone/todue/cmd/internals/models"
+	"github.com/corbinlazarone/todue/cmd/internals/opencode"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib" // to load the pgx driver for database/sql
 )
