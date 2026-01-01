@@ -3,11 +3,12 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
-import { Assignment, Courses } from "../../types";
+import { Courses } from "../../types";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
 import { extractCourseData } from "../../api/upload/actions";
 import { extractTextFromPDF } from "../../api/upload/helpers";
+import { useDashboard } from "../../context";
 import { FileText } from "lucide-react";
 
 import AssignmentCard from "./assingment-card";
@@ -17,6 +18,7 @@ export function Upload() {
   const [extractedCourseData, setExtractedCourseData] = useState<Courses>();
   const [disWhileExtract, setDisWhileExtract] = useState<boolean>(false);
   const [disBeforeExtract, setDisBeforeExtract] = useState<boolean>(true);
+  const { setSidebarDisabled } = useDashboard();
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -34,6 +36,7 @@ export function Upload() {
 
     try {
       setDisWhileExtract(true);
+      setSidebarDisabled(true);
 
       const buffer = Buffer.from(await file.arrayBuffer());
       const text = await extractTextFromPDF(buffer);
@@ -55,6 +58,7 @@ export function Upload() {
     } finally {
       setDisBeforeExtract(false);
       setDisWhileExtract(false);
+      setSidebarDisabled(false);
     }
   }
 

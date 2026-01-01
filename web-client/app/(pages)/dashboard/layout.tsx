@@ -2,6 +2,7 @@ import { getSession } from "@/utils/session";
 import { redirect } from "next/navigation";
 import { SidebarInset, SidebarProvider } from "@/shared/ui/sidebar";
 import { AppSidebar } from "@/features/dashboard";
+import { DashboardProvider } from "@/features/dashboard/context";
 
 export default async function DashboardLayout({
   children,
@@ -15,16 +16,18 @@ export default async function DashboardLayout({
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" userData={session.userData} />
-      <SidebarInset>{children}</SidebarInset>
-    </SidebarProvider>
+    <DashboardProvider>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="inset" userData={session.userData} />
+        <SidebarInset>{children}</SidebarInset>
+      </SidebarProvider>
+    </DashboardProvider>
   );
 }
