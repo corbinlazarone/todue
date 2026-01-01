@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/types"
+	"github.com/corbinlazarone/todue/cmd/internals/types"
 )
 
 func (app *application) health(w http.ResponseWriter, r *http.Request) {

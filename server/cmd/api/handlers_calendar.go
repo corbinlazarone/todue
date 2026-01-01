@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/services"
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/types"
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/validator"
+	"github.com/corbinlazarone/todue/cmd/internals/models"
+	"github.com/corbinlazarone/todue/cmd/internals/services"
+	"github.com/corbinlazarone/todue/cmd/internals/types"
+	"github.com/corbinlazarone/todue/cmd/internals/validator"
 	"google.golang.org/api/calendar/v3"
 )
 

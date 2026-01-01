@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
+	"github.com/corbinlazarone/todue/cmd/internals/models"
 	"github.com/golang-jwt/jwt/v5"
 )
 

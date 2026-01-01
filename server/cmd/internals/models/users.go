@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/auth"
+	"github.com/corbinlazarone/todue/cmd/internals/auth"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )

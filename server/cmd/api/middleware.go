@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/types"
+	"github.com/corbinlazarone/todue/cmd/internals/types"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/time/rate"
 )

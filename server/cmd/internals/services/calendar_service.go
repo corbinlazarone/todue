@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/auth"
-	"github.com/corbinlazarone/Todue-Actual/cmd/internals/models"
+	"github.com/corbinlazarone/todue/cmd/internals/auth"
+	"github.com/corbinlazarone/todue/cmd/internals/models"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/calendar/v3"
 	"google.golang.org/api/option"
