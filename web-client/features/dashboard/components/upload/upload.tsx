@@ -6,7 +6,10 @@ import { Card } from "@/shared/ui/card";
 import { Courses } from "../../types";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
-import { extractCourseData } from "../../api/upload/actions";
+import {
+  extractCourseData,
+  insertToGoogleCalendar,
+} from "../../api/upload/actions";
 import { extractTextFromPDF } from "../../api/upload/helpers";
 import { useDashboard } from "../../context";
 import { FileText } from "lucide-react";
@@ -62,7 +65,29 @@ export function Upload() {
     }
   }
 
-  function handleGoogleCalSync() {}
+  async function handleGoogleCalSync() {
+    try {
+      if (!extractedCourseData) {
+        toast.error("An error occured. Try again or contact us.");
+        return;
+      }
+
+      const result = await insertToGoogleCalendar(
+        "", // TODO: add hook to get user's timezone
+        extractedCourseData,
+      );
+
+      if (Array.isArray(result)) {
+        console.log(JSON.stringify(result, null, 2)); // TODO : think ui ideas on how to show these errors to the user.
+      } else {
+        toast.success("Assignments have been synced!");
+      }
+    } catch {
+      toast.error(
+        "Failed to upload to Google Calendar. Try again or contact us.",
+      );
+    }
+  }
 
   function handleAssignmentDelete(id: number) {
     setExtractedCourseData((prev) => {

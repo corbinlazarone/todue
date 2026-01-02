@@ -33,7 +33,7 @@ export async function extractCourseData(text: string): Promise<Courses> {
 export async function insertToGoogleCalendar(
   userTimezone: string,
   courses: Courses,
-): Promise<void | EventError> {
+): Promise<void | EventError[]> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const session = await getSession();
@@ -46,13 +46,38 @@ export async function insertToGoogleCalendar(
     },
     body: JSON.stringify({
       timezone: userTimezone,
-      courses,
+      courses: courses.courses,
     }),
   });
 
   if (!rep.ok) {
     const errorText = await rep.text();
-    console.error("Backend error:", rep.status, errorText);
-    throw new Error();
+    let parsedError: SyntaxError;
+
+    try {
+      parsedError = JSON.parse(errorText);
+    } catch {
+      throw new Error(`Server error (${rep.status}): ${errorText}`);
+    }
+
+    if (Array.isArray(parsedError)) {
+      const eventErrors: EventError[] = (parsedError as any[]).filter(
+        (item: any) =>
+          item.assignment_id !== undefined &&
+          item.assignment_name !== undefined &&
+          Array.isArray(item.errors),
+      ) as EventError[];
+
+      if (eventErrors.length > 0) {
+        return eventErrors;
+      }
+
+      // No valid errors found
+      throw new Error(`Server error (${rep.status}): ${errorText}`);
+    } else {
+      throw new Error(`Server error (${rep.status}): ${errorText}`);
+    }
   }
+
+  return;
 }
