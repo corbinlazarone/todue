@@ -62,6 +62,8 @@ export function Upload() {
     }
   }
 
+  function handleGoogleCalSync() {}
+
   function handleAssignmentDelete(id: number) {
     setExtractedCourseData((prev) => {
       if (!prev || !prev.courses || prev.courses.length === 0) return prev;
@@ -97,7 +99,7 @@ export function Upload() {
         <Button
           variant="secondary"
           disabled={disBeforeExtract || disWhileExtract}
-          onClick={() => toast.info("Not implemented")}
+          onClick={() => handleGoogleCalSync()}
         >
           Sync to Google Calendar
         </Button>
