@@ -28,7 +28,7 @@ type CalendarEvent struct {
 type TimeConversionError struct {
 	AssignmentID   int      `json:"assignment_id"`
 	AssignmentName string   `json:"assignment_name"`
-	Error          []string `json:"error"`
+	Error          []string `json:"errors"`
 }
 
 func NewCalendarEvent() *CalendarEvent {
