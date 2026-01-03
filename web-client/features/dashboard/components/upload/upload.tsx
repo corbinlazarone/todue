@@ -5,7 +5,7 @@ import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
 import { Courses } from "../../types";
 import { toast } from "sonner";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   extractCourseData,
   insertToGoogleCalendar,
@@ -18,10 +18,15 @@ import AssignmentCard from "./assingment-card";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [userTimezone, setTimezone] = useState<string>();
   const [extractedCourseData, setExtractedCourseData] = useState<Courses>();
   const [disWhileExtract, setDisWhileExtract] = useState<boolean>(false);
   const [disBeforeExtract, setDisBeforeExtract] = useState<boolean>(true);
   const { setSidebarDisabled } = useDashboard();
+
+  useEffect(() => {
+    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  }, []);
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -67,13 +72,13 @@ export function Upload() {
 
   async function handleGoogleCalSync() {
     try {
-      if (!extractedCourseData) {
+      if (!extractedCourseData || !userTimezone) {
         toast.error("An error occured. Try again or contact us.");
         return;
       }
 
       const result = await insertToGoogleCalendar(
-        "", // TODO: add hook to get user's timezone
+        userTimezone,
         extractedCourseData,
       );
 
