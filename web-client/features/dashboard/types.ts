@@ -19,3 +19,9 @@ export type CourseData = {
 export type Courses = {
   courses: CourseData[];
 };
+
+export type EventError = {
+  assignment_id: number;
+  assignment_name: string;
+  errors: string[];
+};

@@ -5,8 +5,11 @@ import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
 import { Courses } from "../../types";
 import { toast } from "sonner";
-import { useRef, useState } from "react";
-import { extractCourseData } from "../../api/upload/actions";
+import { useEffect, useRef, useState } from "react";
+import {
+  extractCourseData,
+  insertToGoogleCalendar,
+} from "../../api/upload/actions";
 import { extractTextFromPDF } from "../../api/upload/helpers";
 import { useDashboard } from "../../context";
 import { FileText } from "lucide-react";
@@ -15,10 +18,15 @@ import AssignmentCard from "./assingment-card";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [userTimezone, setTimezone] = useState<string>();
   const [extractedCourseData, setExtractedCourseData] = useState<Courses>();
   const [disWhileExtract, setDisWhileExtract] = useState<boolean>(false);
   const [disBeforeExtract, setDisBeforeExtract] = useState<boolean>(true);
   const { setSidebarDisabled } = useDashboard();
+
+  useEffect(() => {
+    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+  }, []);
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -62,6 +70,30 @@ export function Upload() {
     }
   }
 
+  async function handleGoogleCalSync() {
+    try {
+      if (!extractedCourseData || !userTimezone) {
+        toast.error("An error occured. Try again or contact us.");
+        return;
+      }
+
+      const result = await insertToGoogleCalendar(
+        userTimezone,
+        extractedCourseData,
+      );
+
+      if (Array.isArray(result)) {
+        console.log(JSON.stringify(result, null, 2)); // TODO : think ui ideas on how to show these errors to the user.
+      } else {
+        toast.success("Assignments have been synced!");
+      }
+    } catch {
+      toast.error(
+        "Failed to upload to Google Calendar. Try again or contact us.",
+      );
+    }
+  }
+
   function handleAssignmentDelete(id: number) {
     setExtractedCourseData((prev) => {
       if (!prev || !prev.courses || prev.courses.length === 0) return prev;
@@ -97,7 +129,7 @@ export function Upload() {
         <Button
           variant="secondary"
           disabled={disBeforeExtract || disWhileExtract}
-          onClick={() => toast.info("Not implemented")}
+          onClick={() => handleGoogleCalSync()}
         >
           Sync to Google Calendar
         </Button>
