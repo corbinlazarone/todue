@@ -70,7 +70,6 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 						AssignmentID:   assVal.ID,
 						AssignmentName: assVal.Name,
 						Error:          []string{err.Error()},
-						// Error:          fmt.Sprintf("invalid due date format: %v", err),
 					})
 				}
 			} else {
@@ -80,7 +79,6 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 						AssignmentID:   assVal.ID,
 						AssignmentName: assVal.Name,
 						Error:          []string{err.Error()},
-						// Error:          fmt.Sprintf("start time conversion failed: %v", err),
 					})
 				}
 
@@ -90,7 +88,6 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 						AssignmentID:   assVal.ID,
 						AssignmentName: assVal.Name,
 						Error:          []string{err.Error()},
-						// Error:          fmt.Sprintf("end time conversion failed: %v", err),
 					})
 				}
 			}
