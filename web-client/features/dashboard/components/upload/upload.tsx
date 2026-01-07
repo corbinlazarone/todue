@@ -112,6 +112,10 @@ export function Upload() {
     });
   }
 
+  function handleAssignmentEdit() {
+    toast.info("Not Implemented yet");
+  }
+
   return (
     <div className="space-y-8 w-full max-w-7xl mx-auto px-4 py-6">
       <div className="flex gap-2">
@@ -166,6 +170,7 @@ export function Upload() {
             <AssignmentCard
               assignments={extractedCourseData.courses[0].assignments}
               onDelete={handleAssignmentDelete}
+              onEdit={handleAssignmentEdit}
               syncErrors={syncErrors}
             />
           </>
