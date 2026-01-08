@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
-import { Assignment } from "../../types";
+import { Assignment, EventError } from "../../types";
 import {
   Card,
   CardAction,
@@ -13,13 +13,18 @@ import {
 } from "@/shared/ui/card";
 import { AlertCircle, Calendar, Clock, Edit2, Trash2 } from "lucide-react";
 import { ConfirmDialog } from "./confirm-dialog";
+import { EditAssignmentDialog } from "./edit-assignment-dialog";
 
 export default function AssignmentCard({
   assignments,
   onDelete,
+  onEdit,
+  syncErrors,
 }: {
   assignments: Assignment[];
   onDelete(id: number): void;
+  onEdit(id: number): void;
+  syncErrors: EventError[] | null;
 }) {
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString("en-US", {
@@ -52,32 +57,53 @@ export default function AssignmentCard({
     return `${days} day${days > 1 ? "s" : ""} before`;
   };
 
+  // Group errors by assignment id
+  const errorsById = syncErrors?.reduce(
+    (acc, error) => {
+      acc[error.assignment_id] = (acc[error.assignment_id] || []).concat(
+        error.errors,
+      );
+      return acc;
+    },
+    {} as Record<number, string[]>,
+  );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
       {assignments.length > 0 ? (
         assignments.map((assignment) => (
           <div key={assignment.id}>
-            <Card className="hover:shadow-md transition-shadow h-full">
+            <Card
+              className={`hover:shadow-md transition-shadow h-full ${errorsById?.[assignment.id] ? "border-red-500 border-2" : ""}`}
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-center space-x-2">
                   <div
                     className="h-2 w-2 rounded-full flex-shrink-0"
                     style={{ backgroundColor: assignment.color }}
                   />
+                  {errorsById?.[assignment.id] && (
+                    <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0" />
+                  )}
                   <CardTitle className="text-sm leading-tight line-clamp-1">
                     {assignment.name}
                   </CardTitle>
                 </div>
                 <CardAction>
                   <div className="flex items-center space-x-0.5">
-                    <Button
-                      /* onClick={() => handleEdit(assignment)} */
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-gray-400 hover:text-indigo-600 h-7 w-7"
-                    >
-                      <Edit2 className="h-3 w-3" />
-                    </Button>
+                    <EditAssignmentDialog
+                      AssignmentData={assignment}
+                      onConfirm={() => onEdit(assignment.id)}
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="text-gray-400 hover:text-red-600 h-7 w-7"
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </Button>
+                      }
+                    />
                     <ConfirmDialog
                       descrip="Are you sure you want to delete this assignment? This action cannot be undone."
                       onConfirm={() => onDelete(assignment.id)}

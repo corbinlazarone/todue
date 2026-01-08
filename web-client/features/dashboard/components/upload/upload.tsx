@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
-import { Courses } from "../../types";
+import { Courses, EventError } from "../../types";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -22,6 +22,7 @@ export function Upload() {
   const [extractedCourseData, setExtractedCourseData] = useState<Courses>();
   const [disWhileExtract, setDisWhileExtract] = useState<boolean>(false);
   const [disBeforeExtract, setDisBeforeExtract] = useState<boolean>(true);
+  const [syncErrors, setSyncErrors] = useState<EventError[] | null>(null);
   const { setSidebarDisabled } = useDashboard();
 
   useEffect(() => {
@@ -71,6 +72,7 @@ export function Upload() {
   }
 
   async function handleGoogleCalSync() {
+    setSyncErrors(null);
     try {
       if (!extractedCourseData || !userTimezone) {
         toast.error("An error occured. Try again or contact us.");
@@ -83,7 +85,7 @@ export function Upload() {
       );
 
       if (Array.isArray(result)) {
-        console.log(JSON.stringify(result, null, 2)); // TODO : think ui ideas on how to show these errors to the user.
+        setSyncErrors(result);
       } else {
         toast.success("Assignments have been synced!");
       }
@@ -108,6 +110,10 @@ export function Upload() {
         })),
       };
     });
+  }
+
+  function handleAssignmentEdit() {
+    toast.info("Not Implemented yet");
   }
 
   return (
@@ -164,6 +170,8 @@ export function Upload() {
             <AssignmentCard
               assignments={extractedCourseData.courses[0].assignments}
               onDelete={handleAssignmentDelete}
+              onEdit={handleAssignmentEdit}
+              syncErrors={syncErrors}
             />
           </>
         ) : extractedCourseData ? (
