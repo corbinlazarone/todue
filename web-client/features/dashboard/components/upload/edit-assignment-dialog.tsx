@@ -79,6 +79,12 @@ export function EditAssignmentDialog({
 
           {/* End Time Section */}
           <div className="grid gap-3"></div>
+
+          {/* Color Picker Section */}
+          <div className="grid gap-3"></div>
+
+          {/* Reminder Picker Section */}
+          <div className="grid gap-3"></div>
         </div>
         <form onSubmit={handleSubmit}>
           <DialogFooter>
