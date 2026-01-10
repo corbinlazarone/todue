@@ -15,6 +15,7 @@ import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";
 import { ReactNode } from "react";
 import { Assignment } from "../../types";
+import { Textarea } from "@/shared/ui/textarea";
 
 export function EditAssignmentDialog({
   // trigger,
@@ -41,14 +42,43 @@ export function EditAssignmentDialog({
           {/* <DialogDescription></DialogDescription> */}
         </DialogHeader>
         <div className="grid gap-4">
+          {/* Name section */}
           <div className="grid gap-3">
             <Label htmlFor="name-1">Name</Label>
             <Input id="name-1" name="name" defaultValue={AssignmentData.name} />
           </div>
+
+          {/* Description section */}
           <div className="grid gap-3">
             <Label htmlFor="username-1">Description</Label>
-            <Input id="username-1" name="username" defaultValue="@peduarte" />
+            <Textarea
+              maxLength={50}
+              defaultValue={AssignmentData.description}
+              className="resize-none"
+            />
           </div>
+
+          {/* all day section */}
+          <div className="flex items-center justify-between">
+            <Label htmlFor="username-1">All Day</Label>
+            <div className="flex gap-3">
+              <Button variant="outline" type="button">
+                Yes
+              </Button>
+              <Button variant="outline" type="button">
+                No
+              </Button>
+            </div>
+          </div>
+
+          {/* Due Date Section */}
+          <div className="grid gap-3"></div>
+
+          {/* Start Time Section */}
+          <div className="grid gap-3"></div>
+
+          {/* End Time Section */}
+          <div className="grid gap-3"></div>
         </div>
         <form onSubmit={handleSubmit}>
           <DialogFooter>
