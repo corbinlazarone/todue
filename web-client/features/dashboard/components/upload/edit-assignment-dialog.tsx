@@ -17,36 +17,36 @@ import { ReactNode } from "react";
 import { Assignment } from "../../types";
 
 export function EditAssignmentDialog({
-  trigger,
-  onConfirm,
+  // trigger,
+  // onConfirm,
   AssignmentData,
 }: {
-  trigger: ReactNode;
-  onConfirm(e: React.FormEvent): void;
+  // trigger: ReactNode;
+  // onConfirm(e: React.FormEvent): void;
   AssignmentData: Assignment;
 }) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    onConfirm(e);
+    // onConfirm(e);
   }
 
   // TODO: Disply the assignment data they are about to edit
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+    <Dialog open={true}>
+      {/* <DialogTrigger asChild>{trigger}</DialogTrigger> */}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{AssignmentData.name}</DialogTitle>
-          <DialogDescription>{AssignmentData.description}</DialogDescription>
+          <DialogTitle>Edit Assignment</DialogTitle>
+          {/* <DialogDescription></DialogDescription> */}
         </DialogHeader>
         <div className="grid gap-4">
           <div className="grid gap-3">
             <Label htmlFor="name-1">Name</Label>
-            <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+            <Input id="name-1" name="name" defaultValue={AssignmentData.name} />
           </div>
           <div className="grid gap-3">
-            <Label htmlFor="username-1">Username</Label>
+            <Label htmlFor="username-1">Description</Label>
             <Input id="username-1" name="username" defaultValue="@peduarte" />
           </div>
         </div>

@@ -91,19 +91,7 @@ export default function AssignmentCard({
                 </div>
                 <CardAction>
                   <div className="flex items-center space-x-0.5">
-                    <EditAssignmentDialog
-                      AssignmentData={assignment}
-                      onConfirm={() => onEdit(assignment.id)}
-                      trigger={
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          className="text-gray-400 hover:text-red-600 h-7 w-7"
-                        >
-                          <Edit2 className="h-3 w-3" />
-                        </Button>
-                      }
-                    />
+                    <EditAssignmentDialog AssignmentData={assignment} />
                     <ConfirmDialog
                       descrip="Are you sure you want to delete this assignment? This action cannot be undone."
                       onConfirm={() => onDelete(assignment.id)}
