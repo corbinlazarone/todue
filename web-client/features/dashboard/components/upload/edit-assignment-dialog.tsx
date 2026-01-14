@@ -3,19 +3,17 @@
 import { Button } from "@/shared/ui/button";
 import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";
-import { ReactNode } from "react";
+
 import { Assignment, colorOptions, reminderOptions } from "../../types";
 import { Textarea } from "@/shared/ui/textarea";
 
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
   DialogClose,
-  DialogDescription,
 } from "@/shared/ui/dialog";
 
 import {
@@ -25,7 +23,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
 } from "@/shared/ui/select";
 
 export function EditAssignmentDialog({
@@ -93,7 +90,17 @@ export function EditAssignmentDialog({
               <SelectContent>
                 <SelectGroup>
                   {colorOptions.map((c) => (
-                    <SelectItem value={c.value}>{c.label}</SelectItem>
+                    <SelectItem key={c.value} value={c.value}>
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-4 h-4 rounded-full"
+                          style={{ backgroundColor: c.value }}
+                          aria-label={c.label}
+                          title={c.label}
+                        />
+                        <span className="text-sm">{c.label}</span>
+                      </div>
+                    </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
@@ -110,7 +117,9 @@ export function EditAssignmentDialog({
               <SelectContent>
                 <SelectGroup>
                   {reminderOptions.map((r) => (
-                    <SelectItem value={r.value}>{r.label}</SelectItem>
+                    <SelectItem key={r.value} value={r.value}>
+                      {r.label}
+                    </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
