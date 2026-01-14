@@ -1,5 +1,12 @@
 "use client";
 
+import { Button } from "@/shared/ui/button";
+import { Label } from "@/shared/ui/label";
+import { Input } from "@/shared/ui/input";
+import { ReactNode } from "react";
+import { Assignment, colorOptions, reminderOptions } from "../../types";
+import { Textarea } from "@/shared/ui/textarea";
+
 import {
   Dialog,
   DialogTrigger,
@@ -10,12 +17,16 @@ import {
   DialogClose,
   DialogDescription,
 } from "@/shared/ui/dialog";
-import { Button } from "@/shared/ui/button";
-import { Label } from "@/shared/ui/label";
-import { Input } from "@/shared/ui/input";
-import { ReactNode } from "react";
-import { Assignment } from "../../types";
-import { Textarea } from "@/shared/ui/textarea";
+
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+} from "@/shared/ui/select";
 
 export function EditAssignmentDialog({
   // trigger,
@@ -72,29 +83,38 @@ export function EditAssignmentDialog({
             </div>
           </div>
 
-          {/* Due Date Section */}
-          <div className="grid gap-3">
-            <Label>Due Date</Label>
-          </div>
-
-          {/* Start Time Section */}
-          <div className="grid gap-3">
-            <Label>Start Time</Label>
-          </div>
-
-          {/* End Time Section */}
-          <div className="grid gap-3">
-            <Label>End Time</Label>
-          </div>
-
           {/* Color Picker Section */}
           <div className="grid gap-3">
             <Label>Color</Label>
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a color" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {colorOptions.map((c) => (
+                    <SelectItem value={c.value}>{c.label}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Reminder Picker Section */}
           <div className="grid gap-3">
             <Label>Reminder</Label>
+            <Select>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a reminder time" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {reminderOptions.map((r) => (
+                    <SelectItem value={r.value}>{r.label}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <form onSubmit={handleSubmit}>
