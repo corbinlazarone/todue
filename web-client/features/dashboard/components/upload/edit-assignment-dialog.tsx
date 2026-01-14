@@ -44,14 +44,15 @@ export function EditAssignmentDialog({
         <div className="grid gap-4">
           {/* Name section */}
           <div className="grid gap-3">
-            <Label htmlFor="name-1">Name</Label>
-            <Input id="name-1" name="name" defaultValue={AssignmentData.name} />
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" name="name" defaultValue={AssignmentData.name} />
           </div>
 
           {/* Description section */}
           <div className="grid gap-3">
-            <Label htmlFor="username-1">Description</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
+              id="description"
               maxLength={50}
               defaultValue={AssignmentData.description}
               className="resize-none"
@@ -60,7 +61,7 @@ export function EditAssignmentDialog({
 
           {/* all day section */}
           <div className="flex items-center justify-between">
-            <Label htmlFor="username-1">All Day</Label>
+            <Label>All Day</Label>
             <div className="flex gap-3">
               <Button variant="outline" type="button">
                 Yes
@@ -72,19 +73,29 @@ export function EditAssignmentDialog({
           </div>
 
           {/* Due Date Section */}
-          <div className="grid gap-3"></div>
+          <div className="grid gap-3">
+            <Label>Due Date</Label>
+          </div>
 
           {/* Start Time Section */}
-          <div className="grid gap-3"></div>
+          <div className="grid gap-3">
+            <Label>Start Time</Label>
+          </div>
 
           {/* End Time Section */}
-          <div className="grid gap-3"></div>
+          <div className="grid gap-3">
+            <Label>End Time</Label>
+          </div>
 
           {/* Color Picker Section */}
-          <div className="grid gap-3"></div>
+          <div className="grid gap-3">
+            <Label>Color</Label>
+          </div>
 
           {/* Reminder Picker Section */}
-          <div className="grid gap-3"></div>
+          <div className="grid gap-3">
+            <Label>Reminder</Label>
+          </div>
         </div>
         <form onSubmit={handleSubmit}>
           <DialogFooter>
