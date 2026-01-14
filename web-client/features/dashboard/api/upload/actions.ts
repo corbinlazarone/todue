@@ -61,8 +61,8 @@ export async function insertToGoogleCalendar(
     }
 
     if (Array.isArray(parsedError)) {
-      const eventErrors: EventError[] = (parsedError as any[]).filter(
-        (item: any) =>
+      const eventErrors: EventError[] = parsedError.filter(
+        (item) =>
           item.assignment_id !== undefined &&
           item.assignment_name !== undefined &&
           Array.isArray(item.errors),
