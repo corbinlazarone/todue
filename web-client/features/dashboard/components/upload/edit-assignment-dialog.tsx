@@ -44,6 +44,8 @@ export function EditAssignmentDialog({
   const [endCalOpen, setEndCalOpen] = useState(false);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
+  const [allDay, setAllDay] = useState(AssignmentData.all_day);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     onConfirm(e);
@@ -88,10 +90,18 @@ export function EditAssignmentDialog({
           <div className="grid gap-3">
             <Label>All Day</Label>
             <div className="flex gap-3">
-              <Button variant="outline" type="button">
+              <Button
+                variant={allDay ? "default" : "outline"}
+                type="button"
+                onClick={() => setAllDay(true)}
+              >
                 Yes
               </Button>
-              <Button variant="outline" type="button">
+              <Button
+                variant={!allDay ? "default" : "outline"}
+                type="button"
+                onClick={() => setAllDay(false)}
+              >
                 No
               </Button>
             </div>
@@ -103,7 +113,11 @@ export function EditAssignmentDialog({
               <Label htmlFor="start-date-picker">Start Date</Label>
               <Popover open={startCalOpen} onOpenChange={setStartCalOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" id="start-date-picker">
+                  <Button
+                    variant="outline"
+                    id="start-date-picker"
+                    disabled={allDay}
+                  >
                     {startDate ? startDate.toLocaleDateString() : "Select date"}
                     <ChevronDown />
                   </Button>
@@ -128,6 +142,7 @@ export function EditAssignmentDialog({
                 id="start-time-picker"
                 step="1"
                 defaultValue="10:30:00"
+                disabled={allDay}
                 className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
               />
             </div>
@@ -139,7 +154,11 @@ export function EditAssignmentDialog({
               <Label htmlFor="end-date-picker">End Date</Label>
               <Popover open={endCalOpen} onOpenChange={setEndCalOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" id="end-date-picker">
+                  <Button
+                    variant="outline"
+                    id="end-date-picker"
+                    disabled={allDay}
+                  >
                     {endDate ? endDate.toLocaleDateString() : "Select date"}
                     <ChevronDown />
                   </Button>
@@ -164,6 +183,7 @@ export function EditAssignmentDialog({
                 id="end-time-picker"
                 step="1"
                 defaultValue="10:30:00"
+                disabled={allDay}
                 className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
               />
             </div>
