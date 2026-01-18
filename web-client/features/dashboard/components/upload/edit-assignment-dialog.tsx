@@ -38,13 +38,17 @@ export function EditAssignmentDialog({
   onConfirm(e: React.FormEvent): void;
   AssignmentData: Assignment;
 }) {
+  const [allDay, setAllDay] = useState(AssignmentData.all_day);
+
   const [startCalOpen, setStartCalOpen] = useState(false);
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    new Date(AssignmentData.due_date),
+  );
 
   const [endCalOpen, setEndCalOpen] = useState(false);
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
-
-  const [allDay, setAllDay] = useState(AssignmentData.all_day);
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    new Date(AssignmentData.due_date),
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -62,7 +66,7 @@ export function EditAssignmentDialog({
   // }
 
   return (
-    <Dialog open={true}>
+    <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -141,7 +145,7 @@ export function EditAssignmentDialog({
                 type="time"
                 id="start-time-picker"
                 step="1"
-                defaultValue="10:30:00"
+                defaultValue={AssignmentData.start_time}
                 disabled={allDay}
                 className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
               />
@@ -166,7 +170,7 @@ export function EditAssignmentDialog({
                 <PopoverContent>
                   <Calendar
                     mode="single"
-                    selected={startDate}
+                    selected={endDate}
                     captionLayout="dropdown"
                     onSelect={(date: Date | undefined) => {
                       setEndDate(date);
@@ -182,7 +186,7 @@ export function EditAssignmentDialog({
                 type="time"
                 id="end-time-picker"
                 step="1"
-                defaultValue="10:30:00"
+                defaultValue={AssignmentData.end_time}
                 disabled={allDay}
                 className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
               />
@@ -192,7 +196,7 @@ export function EditAssignmentDialog({
           {/* Color Picker Section */}
           <div className="grid gap-3">
             <Label>Color</Label>
-            <Select>
+            <Select value={AssignmentData.color}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a color" />
               </SelectTrigger>
@@ -219,7 +223,7 @@ export function EditAssignmentDialog({
           {/* Reminder Picker Section */}
           <div className="grid gap-3">
             <Label>Reminder</Label>
-            <Select>
+            <Select value={AssignmentData.reminder.toString()}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a reminder time" />
               </SelectTrigger>

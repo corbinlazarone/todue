@@ -14,6 +14,8 @@ import { extractTextFromPDF } from "../../api/upload/helpers";
 import { useDashboard } from "../../context";
 import { FileText } from "lucide-react";
 
+import sampleData from "@/public/sample_data.json";
+
 import AssignmentCard from "./assingment-card";
 
 export function Upload() {
@@ -47,20 +49,21 @@ export function Upload() {
       setDisWhileExtract(true);
       setSidebarDisabled(true);
 
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const text = await extractTextFromPDF(buffer);
+      // FIX: put this back the way it was.
 
-      const courseDataPromise = extractCourseData(text);
+      // const buffer = Buffer.from(await file.arrayBuffer());
+      // const text = await extractTextFromPDF(buffer);
+      //
+      // const courseDataPromise = extractCourseData(text);
+      //
+      // toast.promise(courseDataPromise, {
+      //   loading: "Uploading...",
+      //   success: () => `${file.name} has been uploaded!`,
+      //   error: "Error",
+      // });
 
-      toast.promise(courseDataPromise, {
-        loading: "Uploading...",
-        success: () => `${file.name} has been uploaded!`,
-        error: "Error",
-      });
-
-      const courseData = await courseDataPromise;
-
-      setExtractedCourseData(courseData);
+      // const courseData = await courseDataPromise;
+      setExtractedCourseData(sampleData);
     } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
@@ -112,9 +115,18 @@ export function Upload() {
     });
   }
 
-  function handleAssignmentEdit() {
-    toast.info("Not Implemented yet");
+  function handleAssignmentEdit(id: number) {
     // NOTE: convert selected reminder option value back to int
+
+    extractedCourseData?.courses.map((cour) => {
+      const updatedAssignment = cour.assignments.find((ass) => ass.id == id);
+      console.log(
+        "ASSIGNMENT TRYING TO UPDATE: ",
+        JSON.stringify(updatedAssignment, null, 2),
+      );
+    });
+
+    toast.info("Not Implemented yet");
   }
 
   return (
