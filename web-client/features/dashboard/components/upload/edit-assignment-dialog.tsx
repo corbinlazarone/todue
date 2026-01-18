@@ -6,6 +6,11 @@ import { Input } from "@/shared/ui/input";
 import { Calendar } from "@/shared/ui/calendar";
 import { Assignment, colorOptions, reminderOptions } from "../../types";
 import { Textarea } from "@/shared/ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { ChevronDown } from "lucide-react";
+import { ReactNode, useState } from "react";
+import { DialogTrigger } from "@/shared/ui/dialog";
+
 import {
   Dialog,
   DialogContent,
@@ -23,17 +28,14 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/shared/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
-import { ChevronDown } from "lucide-react";
-import { useState } from "react";
 
 export function EditAssignmentDialog({
-  // trigger,
-  // onConfirm,
+  trigger,
+  onConfirm,
   AssignmentData,
 }: {
-  // trigger: ReactNode;
-  // onConfirm(e: React.FormEvent): void;
+  trigger: ReactNode;
+  onConfirm(e: React.FormEvent): void;
   AssignmentData: Assignment;
 }) {
   const [startCalOpen, setStartCalOpen] = useState(false);
@@ -44,7 +46,7 @@ export function EditAssignmentDialog({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // onConfirm(e);
+    onConfirm(e);
   }
 
   // NOTE: going to use this method for converting user's chose date and time to their specfic timezone.
@@ -57,15 +59,12 @@ export function EditAssignmentDialog({
   //   return format(zonedDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: timezone });
   // }
 
-  // TODO: Disply the assignment data they are about to edit
-
   return (
     <Dialog open={true}>
-      {/* <DialogTrigger asChild>{trigger}</DialogTrigger> */}
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Assignment</DialogTitle>
-          {/* <DialogDescription></DialogDescription> */}
         </DialogHeader>
         <div className="grid gap-4">
           {/* Name section */}
