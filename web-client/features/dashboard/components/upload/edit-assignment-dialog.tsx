@@ -3,10 +3,9 @@
 import { Button } from "@/shared/ui/button";
 import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";
-
+import { Calendar } from "@/shared/ui/calendar";
 import { Assignment, colorOptions, reminderOptions } from "../../types";
 import { Textarea } from "@/shared/ui/textarea";
-
 import {
   Dialog,
   DialogContent,
@@ -24,6 +23,9 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/shared/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 export function EditAssignmentDialog({
   // trigger,
@@ -34,10 +36,26 @@ export function EditAssignmentDialog({
   // onConfirm(e: React.FormEvent): void;
   AssignmentData: Assignment;
 }) {
+  const [startCalOpen, setStartCalOpen] = useState(false);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+
+  const [endCalOpen, setEndCalOpen] = useState(false);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     // onConfirm(e);
   }
+
+  // NOTE: going to use this method for converting user's chose date and time to their specfic timezone.
+  // import { format } from 'date-fns';
+  // import { utcToZonedTime, zonedTimeToUtc } from 'date-fns-tz';
+  // export function combineToRFC3339WithTimezone(dateStr: string, timeStr: string, timezone: string): string {
+  //   const dateTimeStr = `${dateStr}T${timeStr}:00`;
+  //   const localDate = new Date(dateTimeStr);
+  //   const zonedDate = utcToZonedTime(localDate, timezone);
+  //   return format(zonedDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone: timezone });
+  // }
 
   // TODO: Disply the assignment data they are about to edit
 
@@ -68,7 +86,7 @@ export function EditAssignmentDialog({
           </div>
 
           {/* all day section */}
-          <div className="flex items-center justify-between">
+          <div className="grid gap-3">
             <Label>All Day</Label>
             <div className="flex gap-3">
               <Button variant="outline" type="button">
@@ -77,6 +95,78 @@ export function EditAssignmentDialog({
               <Button variant="outline" type="button">
                 No
               </Button>
+            </div>
+          </div>
+
+          {/* start date and time */}
+          <div className="flex gap-4">
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="start-date-picker">Start Date</Label>
+              <Popover open={startCalOpen} onOpenChange={setStartCalOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" id="start-date-picker">
+                    {startDate ? startDate.toLocaleDateString() : "Select date"}
+                    <ChevronDown />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    captionLayout="dropdown"
+                    onSelect={(date: Date | undefined) => {
+                      setStartDate(date);
+                      setStartCalOpen(false);
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="start-time-picker">Start Time</Label>
+              <Input
+                type="time"
+                id="start-time-picker"
+                step="1"
+                defaultValue="10:30:00"
+                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              />
+            </div>
+          </div>
+
+          {/* end date and time */}
+          <div className="flex gap-4">
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="end-date-picker">End Date</Label>
+              <Popover open={endCalOpen} onOpenChange={setEndCalOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" id="end-date-picker">
+                    {endDate ? endDate.toLocaleDateString() : "Select date"}
+                    <ChevronDown />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    captionLayout="dropdown"
+                    onSelect={(date: Date | undefined) => {
+                      setEndDate(date);
+                      setEndCalOpen(false);
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="end-time-picker">End Time</Label>
+              <Input
+                type="time"
+                id="end-time-picker"
+                step="1"
+                defaultValue="10:30:00"
+                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+              />
             </div>
           </div>
 
