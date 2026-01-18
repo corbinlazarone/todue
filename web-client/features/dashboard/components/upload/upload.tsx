@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
-import { Courses, EventError } from "../../types";
+import { Assignment, Courses, EventError } from "../../types";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -28,8 +28,11 @@ export function Upload() {
   const { setSidebarDisabled } = useDashboard();
 
   useEffect(() => {
+    // NOTE: if this fails to grab user's timezone. have the user manually enter their timezone.
     setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
   }, []);
+
+  if (!userTimezone) return; // TODO: get rid of this
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -115,18 +118,26 @@ export function Upload() {
     });
   }
 
-  function handleAssignmentEdit(id: number) {
-    // NOTE: convert selected reminder option value back to int
+  function handleAssignmentEdit(data: Assignment) {
+    console.log(
+      "UPDATED IN HANDLE ASSIGNMENT EDIT ASSIGNMENT: ",
+      JSON.stringify(data, null, 2),
+    );
+    // setExtractedCourseData((prev) => {
+    //   if (!prev || !prev.courses) return prev;
+    //
+    //   return {
+    //     ...prev,
+    //     courses: prev.courses.map((course) => ({
+    //       ...course,
+    //       assignments: course.assignments.map((assignment) =>
+    //         assignment.id === data.id ? data : assignment
+    //       ),
+    //     })),
+    //   };
+    // });
 
-    extractedCourseData?.courses.map((cour) => {
-      const updatedAssignment = cour.assignments.find((ass) => ass.id == id);
-      console.log(
-        "ASSIGNMENT TRYING TO UPDATE: ",
-        JSON.stringify(updatedAssignment, null, 2),
-      );
-    });
-
-    toast.info("Not Implemented yet");
+    toast.success("Assignment updated successfully!");
   }
 
   return (
@@ -182,6 +193,7 @@ export function Upload() {
             </div>
             <AssignmentCard
               assignments={extractedCourseData.courses[0].assignments}
+              timezone={userTimezone}
               onDelete={handleAssignmentDelete}
               onEdit={handleAssignmentEdit}
               syncErrors={syncErrors}

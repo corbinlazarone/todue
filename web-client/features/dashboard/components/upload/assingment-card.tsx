@@ -17,13 +17,15 @@ import { EditAssignmentDialog } from "./edit-assignment-dialog";
 
 export default function AssignmentCard({
   assignments,
+  timezone,
   onDelete,
   onEdit,
   syncErrors,
 }: {
   assignments: Assignment[];
+  timezone: string;
   onDelete(id: number): void;
-  onEdit(id: number): void;
+  onEdit(data: Assignment): void;
   syncErrors: EventError[] | null;
 }) {
   const formatDate = (date: string) => {
@@ -93,7 +95,8 @@ export default function AssignmentCard({
                   <div className="flex items-center space-x-0.5">
                     <EditAssignmentDialog
                       AssignmentData={assignment}
-                      onConfirm={() => onEdit(assignment.id)}
+                      timezone={timezone}
+                      onConfirm={() => onEdit(assignment)}
                       trigger={
                         <Button
                           variant="ghost"
