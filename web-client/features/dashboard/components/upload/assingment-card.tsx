@@ -96,7 +96,7 @@ export default function AssignmentCard({
                     <EditAssignmentDialog
                       AssignmentData={assignment}
                       timezone={timezone}
-                      onConfirm={() => onEdit(assignment)}
+                      onConfirm={(data) => onEdit(data)}
                       trigger={
                         <Button
                           variant="ghost"

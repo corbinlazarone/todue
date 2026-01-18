@@ -20,7 +20,7 @@ import AssignmentCard from "./assingment-card";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [userTimezone, setTimezone] = useState<string>();
+  const [userTimezone, setTimezone] = useState<string>("America/New_York");
   const [extractedCourseData, setExtractedCourseData] = useState<Courses>();
   const [disWhileExtract, setDisWhileExtract] = useState<boolean>(false);
   const [disBeforeExtract, setDisBeforeExtract] = useState<boolean>(true);
@@ -28,11 +28,9 @@ export function Upload() {
   const { setSidebarDisabled } = useDashboard();
 
   useEffect(() => {
-    // NOTE: if this fails to grab user's timezone. have the user manually enter their timezone.
-    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setTimezone(detectedTimezone);
   }, []);
-
-  if (!userTimezone) return; // TODO: get rid of this
 
   async function handleExtract() {
     const file = fileInputRef.current?.files?.[0];
@@ -119,29 +117,30 @@ export function Upload() {
   }
 
   function handleAssignmentEdit(data: Assignment) {
-    console.log(
-      "UPDATED IN HANDLE ASSIGNMENT EDIT ASSIGNMENT: ",
-      JSON.stringify(data, null, 2),
-    );
-    // setExtractedCourseData((prev) => {
-    //   if (!prev || !prev.courses) return prev;
-    //
-    //   return {
-    //     ...prev,
-    //     courses: prev.courses.map((course) => ({
-    //       ...course,
-    //       assignments: course.assignments.map((assignment) =>
-    //         assignment.id === data.id ? data : assignment
-    //       ),
-    //     })),
-    //   };
-    // });
+    setExtractedCourseData((prev) => {
+      if (!prev || !prev.courses) return prev;
 
-    toast.success("Assignment updated successfully!");
+      return {
+        ...prev,
+        courses: prev.courses.map((course) => ({
+          ...course,
+          assignments: course.assignments.map((assignment) =>
+            assignment.id === data.id ? data : assignment,
+          ),
+        })),
+      };
+    });
   }
 
   return (
     <div className="space-y-8 w-full max-w-7xl mx-auto px-4 py-6">
+      <Button
+        onClick={() => {
+          console.log(JSON.stringify(extractedCourseData, null, 2));
+        }}
+      >
+        CLICK
+      </Button>
       <div className="flex gap-2">
         <Input
           ref={fileInputRef}

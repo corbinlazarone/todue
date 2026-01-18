@@ -42,17 +42,24 @@ export function EditAssignmentDialog({
   onConfirm(data: Assignment): void;
   AssignmentData: Assignment;
 }) {
-  const [allDay, setAllDay] = useState(AssignmentData.all_day);
   const [calOpen, setCalOpen] = useState(false);
+
+  // Assignment value state
+  const [allDay, setAllDay] = useState(AssignmentData.all_day);
   const [dueDate, setDueDate] = useState<Date | undefined>(
     new Date(AssignmentData.due_date),
   );
   const [color, setColor] = useState(AssignmentData.color);
   const [reminder, setReminder] = useState(AssignmentData.reminder);
+  const [name, setName] = useState(AssignmentData.name);
+  const [description, setDescription] = useState(AssignmentData.description);
+  const [startTime, setStartTime] = useState(AssignmentData.start_time);
+  const [endTime, setEndTime] = useState(AssignmentData.end_time);
 
   function combineToRFC3339WithTimezone(date: Date, timeStr: string): string {
     const dateStr = format(date, "yyyy-MM-dd");
-    const dateTimeStr = `${dateStr}T${timeStr}:00`;
+    const timeWithoutSeconds = timeStr.split(":").slice(0, 2).join(":");
+    const dateTimeStr = `${dateStr}T${timeWithoutSeconds}:00`;
     const localDate = new Date(dateTimeStr);
     const zonedDate = toZonedTime(localDate, timezone);
     return format(zonedDate, "yyyy-MM-dd'T'HH:mm:ssXXX");
@@ -60,34 +67,20 @@ export function EditAssignmentDialog({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
 
     const updatedAssignment: Assignment = {
       id: AssignmentData.id,
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
+      name: name,
+      description: description,
       all_day: allDay,
       due_date: dueDate ? dueDate.toISOString().split("T")[0] : "",
       start_time: allDay
         ? ""
-        : combineToRFC3339WithTimezone(
-            dueDate!,
-            formData.get("start-time-picker") as string,
-          ),
-      end_time: allDay
-        ? ""
-        : combineToRFC3339WithTimezone(
-            dueDate!,
-            formData.get("end-time-picker") as string,
-          ),
+        : combineToRFC3339WithTimezone(dueDate!, startTime),
+      end_time: allDay ? "" : combineToRFC3339WithTimezone(dueDate!, endTime),
       color: color,
       reminder: reminder,
     };
-
-    console.log(
-      "UPDATED ASSIGNMENT IN DIALOG: ",
-      JSON.stringify(updatedAssignment, null, 2),
-    );
 
     onConfirm(updatedAssignment);
   }
@@ -104,7 +97,12 @@ export function EditAssignmentDialog({
             {/* Name section */}
             <div className="grid gap-3">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" name="name" defaultValue={AssignmentData.name} />
+              <Input
+                id="name"
+                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
 
             {/* Description section */}
@@ -113,7 +111,8 @@ export function EditAssignmentDialog({
               <Textarea
                 id="description"
                 maxLength={50}
-                defaultValue={AssignmentData.description}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 className="resize-none"
               />
             </div>
@@ -178,7 +177,8 @@ export function EditAssignmentDialog({
                   id="start-time-picker"
                   name="start-time-picker"
                   step="1"
-                  defaultValue={AssignmentData.start_time}
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
                   disabled={allDay}
                   className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                 />
@@ -194,7 +194,8 @@ export function EditAssignmentDialog({
                   id="end-time-picker"
                   name="end-time-picker"
                   step="1"
-                  defaultValue={AssignmentData.end_time}
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
                   disabled={allDay}
                   className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
                 />
