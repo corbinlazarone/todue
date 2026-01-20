@@ -14,6 +14,8 @@ import {
 import { AlertCircle, Calendar, Clock, Edit2, Trash2 } from "lucide-react";
 import { ConfirmDialog } from "./confirm-dialog";
 import { EditAssignmentDialog } from "./edit-assignment-dialog";
+import { format, parseISO } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 export default function AssignmentCard({
   assignments,
@@ -37,11 +39,15 @@ export default function AssignmentCard({
   };
 
   const formatTime = (time: string) => {
-    return new Date(`2000-01-01T${time}`).toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    if (!time) return "";
+    let date: Date;
+    if (time.includes("T")) {
+      date = parseISO(time);
+    } else {
+      date = new Date(`2000-01-01T${time}`);
+    }
+    const zonedDate = toZonedTime(date, timezone);
+    return format(zonedDate, "h:mm a");
   };
 
   const formatReminder = (minutes: number) => {

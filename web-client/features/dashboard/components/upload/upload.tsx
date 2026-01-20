@@ -134,13 +134,6 @@ export function Upload() {
 
   return (
     <div className="space-y-8 w-full max-w-7xl mx-auto px-4 py-6">
-      <Button
-        onClick={() => {
-          console.log(JSON.stringify(extractedCourseData, null, 2));
-        }}
-      >
-        CLICK
-      </Button>
       <div className="flex gap-2">
         <Input
           ref={fileInputRef}
