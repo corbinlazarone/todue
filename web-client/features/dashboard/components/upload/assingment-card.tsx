@@ -101,7 +101,6 @@ export default function AssignmentCard({
                   <div className="flex items-center space-x-0.5">
                     <EditAssignmentDialog
                       AssignmentData={assignment}
-                      timezone={timezone}
                       onConfirm={(data) => onEdit(data)}
                       trigger={
                         <Button

@@ -14,8 +14,6 @@ import { extractTextFromPDF } from "../../api/upload/helpers";
 import { useDashboard } from "../../context";
 import { FileText } from "lucide-react";
 
-import sampleData from "@/public/sample_data.json";
-
 import AssignmentCard from "./assingment-card";
 
 export function Upload() {
@@ -50,21 +48,20 @@ export function Upload() {
       setDisWhileExtract(true);
       setSidebarDisabled(true);
 
-      // FIX: put this back the way it was.
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const text = await extractTextFromPDF(buffer);
 
-      // const buffer = Buffer.from(await file.arrayBuffer());
-      // const text = await extractTextFromPDF(buffer);
-      //
-      // const courseDataPromise = extractCourseData(text);
-      //
-      // toast.promise(courseDataPromise, {
-      //   loading: "Uploading...",
-      //   success: () => `${file.name} has been uploaded!`,
-      //   error: "Error",
-      // });
+      const courseDataPromise = extractCourseData(text);
 
-      // const courseData = await courseDataPromise;
-      setExtractedCourseData(sampleData);
+      toast.promise(courseDataPromise, {
+        loading: "Uploading...",
+        success: () => `${file.name} has been uploaded!`,
+        error: "Error",
+      });
+
+      const courseData = await courseDataPromise;
+
+      setExtractedCourseData(courseData);
     } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
@@ -87,6 +84,8 @@ export function Upload() {
         userTimezone,
         extractedCourseData,
       );
+
+      console.log("GOOGLE SYNC: ", JSON.stringify(result, null, 2));
 
       if (Array.isArray(result)) {
         setSyncErrors(result);

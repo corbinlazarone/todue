@@ -28,26 +28,22 @@ type EventError struct {
 func (e *Event) validateDueDate() error {
 	res := checkFormat(e.DueDate, time.DateOnly)
 
-	if !res && e.AllDay {
+	if !res {
 		return errors.New("Due date does not match expected 'YYYY-MM-DD' format")
-	}
-
-	if res && !e.AllDay {
-		return errors.New("All day event is not marked")
 	}
 
 	return nil
 }
 
 func (e *Event) validateDateTimes() error {
-	resStart := checkFormat(e.StartTime, time.RFC3339)
+	resStart := checkFormat(e.StartTime, "15:04:05") || checkFormat(e.StartTime, "15:04")
 	if !resStart {
-		return errors.New("Start time does not match expected 'YYYY-MM-DDTHH:MM:SSZ' format")
+		return errors.New("Start time does not match expected 'HH:MM' or 'HH:MM:SS' format")
 	}
 
-	resEnd := checkFormat(e.EndTime, time.RFC3339)
+	resEnd := checkFormat(e.EndTime, "15:04:05") || checkFormat(e.EndTime, "15:04")
 	if !resEnd {
-		return errors.New("Start time does not match expected 'YYYY-MM-DDTHH:MM:SSZ' format")
+		return errors.New("End time does not match expected 'HH:MM' or 'HH:MM:SS' format")
 	}
 
 	return nil

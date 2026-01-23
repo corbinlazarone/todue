@@ -11,8 +11,7 @@ import { ChevronDown } from "lucide-react";
 import { ReactNode, useState } from "react";
 import { DialogTrigger } from "@/shared/ui/dialog";
 
-import { format } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
+
 import {
   Dialog,
   DialogContent,
@@ -33,12 +32,10 @@ import {
 
 export function EditAssignmentDialog({
   trigger,
-  timezone,
   onConfirm,
   AssignmentData,
 }: {
   trigger: ReactNode;
-  timezone: string;
   onConfirm(data: Assignment): void;
   AssignmentData: Assignment;
 }) {
@@ -56,14 +53,7 @@ export function EditAssignmentDialog({
   const [startTime, setStartTime] = useState(AssignmentData.start_time);
   const [endTime, setEndTime] = useState(AssignmentData.end_time);
 
-  function combineToRFC3339WithTimezone(date: Date, timeStr: string): string {
-    const dateStr = format(date, "yyyy-MM-dd");
-    const timeWithoutSeconds = timeStr.split(":").slice(0, 2).join(":");
-    const dateTimeStr = `${dateStr}T${timeWithoutSeconds}:00`;
-    const localDate = new Date(dateTimeStr);
-    const zonedDate = toZonedTime(localDate, timezone);
-    return format(zonedDate, "yyyy-MM-dd'T'HH:mm:ssXXX");
-  }
+
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -74,10 +64,8 @@ export function EditAssignmentDialog({
       description: description,
       all_day: allDay,
       due_date: dueDate ? dueDate.toISOString().split("T")[0] : "",
-      start_time: allDay
-        ? ""
-        : combineToRFC3339WithTimezone(dueDate!, startTime),
-      end_time: allDay ? "" : combineToRFC3339WithTimezone(dueDate!, endTime),
+      start_time: allDay ? "" : startTime,
+      end_time: allDay ? "" : endTime,
       color: color,
       reminder: reminder,
     };
