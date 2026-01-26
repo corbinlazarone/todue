@@ -13,6 +13,9 @@ import (
 	"google.golang.org/api/calendar/v3"
 )
 
+// FIX: GETTING: todue-server  | ERROR: 2026/01/23 00:41:30 handlers_calendar.go:134: googleapi:
+// Error 400: Cannot specify both default reminders and overrides at the same time., cannotUseDefaultRemindersAndSpecifyOverride
+
 func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
@@ -185,10 +188,10 @@ func addEventToCalendar(
 			},
 			ColorId: ConvertToColorID(event.ColorId),
 			Reminders: &calendar.EventReminders{
-				UseDefault: event.Reminders.UseDefault,
+				UseDefault: false,
 				Overrides: []*calendar.EventReminder{
 					{
-						Method:  event.Reminders.Overrides[0].Method,
+						Method:  "popup",
 						Minutes: int64(event.Reminders.Overrides[0].Minutes),
 					},
 				},
@@ -205,9 +208,6 @@ func addEventToCalendar(
 				Date: event.End.Date,
 			},
 			ColorId: ConvertToColorID(event.ColorId),
-			Reminders: &calendar.EventReminders{
-				UseDefault: true,
-			},
 		}
 	}
 
