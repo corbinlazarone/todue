@@ -56,7 +56,6 @@ export function Upload() {
       toast.promise(courseDataPromise, {
         loading: "Uploading...",
         success: () => `${file.name} has been uploaded!`,
-        error: "Error",
       });
 
       const courseData = await courseDataPromise;
