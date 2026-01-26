@@ -124,7 +124,7 @@ func (c *Client) convertToOpenAIFormat(req OpenCodeRequest) map[string]any {
 	}
 
 	return map[string]any{
-		"model":       "grok-code", // Grok Code Fast 1 model ID for free usage for now
+		"model":       "big-pickle",
 		"messages":    messages,
 		"max_tokens":  req.MaxTokens,
 		"temperature": 0.1, // Low temperature for consistent structured output
