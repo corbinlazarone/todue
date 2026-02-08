@@ -34,7 +34,6 @@ type TimeConversionError struct {
 func NewCalendarEvent() *CalendarEvent {
 	return &CalendarEvent{
 		Reminders: EventReminder{
-			UseDefault: false,
 			Overrides: []EventOverride{
 				{
 					Method: "email",

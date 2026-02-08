@@ -84,6 +84,7 @@ export function Upload() {
         extractedCourseData,
       );
 
+      // FIX: just for debugging right now.
       console.log("GOOGLE SYNC: ", JSON.stringify(result, null, 2));
 
       if (Array.isArray(result)) {
@@ -155,6 +156,7 @@ export function Upload() {
         </Button>
       </div>
 
+      {/* FIX: disable on extraction fail */}
       {!disBeforeExtract && (
         <Card className="p-3 text-sm border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200">
           Please review the extracted assignments below for any mistakes before
@@ -164,8 +166,8 @@ export function Upload() {
 
       <div className="space-y-4">
         {extractedCourseData &&
-        extractedCourseData.courses &&
-        extractedCourseData.courses.length > 0 ? (
+          extractedCourseData.courses &&
+          extractedCourseData.courses.length > 0 ? (
           <>
             <div className="flex items-center justify-between">
               <div>

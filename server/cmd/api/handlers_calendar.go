@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/corbinlazarone/todue/cmd/internals/models"
@@ -12,9 +13,6 @@ import (
 	"github.com/corbinlazarone/todue/cmd/internals/validator"
 	"google.golang.org/api/calendar/v3"
 )
-
-// FIX: GETTING: todue-server  | ERROR: 2026/01/23 00:41:30 handlers_calendar.go:134: googleapi:
-// Error 400: Cannot specify both default reminders and overrides at the same time., cannotUseDefaultRemindersAndSpecifyOverride
 
 func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
@@ -145,21 +143,24 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 }
 
 func addEventToCalendar(
+
 	ctx context.Context,
 	userModel *models.UserModel,
 	event *types.CalendarEvent,
 	allDay bool,
+
 ) error {
 
 	userID := ctx.Value("userID").(string)
 
 	user, err := userModel.GetByID(ctx, userID)
 	if err != nil {
+
 		return err
 	}
 
 	if user.GoogleRefreshToken == "" {
-		return errors.New("user's google refresh token is  or empty")
+		return errors.New("user's google refresh token is empty")
 	}
 
 	calendarSrv, err := services.GoogleCalendarService(
@@ -174,12 +175,18 @@ func addEventToCalendar(
 
 	var newEvent *calendar.Event
 
+	fmt.Printf("EVENT: %v\n", event)
+
 	if !allDay {
+
 		newEvent = &calendar.Event{
-			Summary:     event.Summary,
+			Summary: event.Summary,
+
 			Description: event.Description,
+
 			Start: &calendar.EventDateTime{
 				DateTime: event.Start.DateTime,
+
 				TimeZone: event.Start.TimeZone,
 			},
 			End: &calendar.EventDateTime{
@@ -191,10 +198,11 @@ func addEventToCalendar(
 				UseDefault: false,
 				Overrides: []*calendar.EventReminder{
 					{
-						Method:  "popup",
+						Method:  "email",
 						Minutes: int64(event.Reminders.Overrides[0].Minutes),
 					},
 				},
+				ForceSendFields: []string{"UseDefault"},
 			},
 		}
 	} else {
@@ -204,10 +212,21 @@ func addEventToCalendar(
 			Start: &calendar.EventDateTime{
 				Date: event.Start.Date,
 			},
+
 			End: &calendar.EventDateTime{
 				Date: event.End.Date,
 			},
 			ColorId: ConvertToColorID(event.ColorId),
+			Reminders: &calendar.EventReminders{
+				UseDefault: false,
+				Overrides: []*calendar.EventReminder{
+					{
+						Method:  "email",
+						Minutes: int64(event.Reminders.Overrides[0].Minutes),
+					},
+				},
+				ForceSendFields: []string{"UseDefault"},
+			},
 		}
 	}
 
