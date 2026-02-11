@@ -7,7 +7,6 @@ import { SessionData } from "@/utils/session";
 import {
   UploadIcon,
   GalleryHorizontalEnd,
-  LayoutDashboard,
 } from "lucide-react";
 import {
   Sidebar,
@@ -23,11 +22,6 @@ import { NavUser } from "./nav-user";
 import { useDashboard } from "../../context";
 
 const navItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard/",
-    icon: LayoutDashboard,
-  },
   {
     title: "Upload",
     url: "/dashboard/upload",

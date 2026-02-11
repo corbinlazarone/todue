@@ -33,7 +33,7 @@ export async function login(authCode: string | undefined) {
   await saveUserSession(data.message);
 
   revalidatePath("/");
-  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/upload");
 }
 
 export async function logout() {
@@ -42,7 +42,7 @@ export async function logout() {
 
   // Revalidate pages to show logged-out state
   revalidatePath("/");
-  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/upload");
 
   return { success: true };
 }
