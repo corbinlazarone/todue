@@ -61,11 +61,12 @@ export function Upload() {
       const courseData = await courseDataPromise;
 
       setExtractedCourseData(courseData);
+
+      setDisBeforeExtract(false);
     } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
     } finally {
-      setDisBeforeExtract(false);
       setDisWhileExtract(false);
       setSidebarDisabled(false);
     }
@@ -153,7 +154,6 @@ export function Upload() {
         </Button>
       </div>
 
-      {/* FIX: disable on extraction fail */}
       {!disBeforeExtract && (
         <Card className="p-3 text-sm border-l-4 border-l-blue-500 bg-blue-50 dark:bg-blue-950 text-blue-800 dark:text-blue-200">
           Please review the extracted assignments below for any mistakes before
