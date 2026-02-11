@@ -84,9 +84,6 @@ export function Upload() {
         extractedCourseData,
       );
 
-      // FIX: just for debugging right now.
-      console.log("GOOGLE SYNC: ", JSON.stringify(result, null, 2));
-
       if (Array.isArray(result)) {
         setSyncErrors(result);
       } else {
