@@ -11,7 +11,6 @@ import { ChevronDown } from "lucide-react";
 import { ReactNode, useState } from "react";
 import { DialogTrigger } from "@/shared/ui/dialog";
 
-
 import {
   Dialog,
   DialogContent,
@@ -30,34 +29,32 @@ import {
   SelectItem,
 } from "@/shared/ui/select";
 
-export function EditAssignmentDialog({
+export function AddNewAssignmentDialog({
   trigger,
   onConfirm,
-  AssignmentData,
 }: {
   trigger: ReactNode;
   onConfirm(data: Assignment): void;
-  AssignmentData: Assignment;
 }) {
   const [calOpen, setCalOpen] = useState(false);
 
   // Assignment value state
-  const [allDay, setAllDay] = useState(AssignmentData.all_day);
+  const [allDay, setAllDay] = useState<boolean>(true);
   const [dueDate, setDueDate] = useState<Date | undefined>(
-    new Date(AssignmentData.due_date),
+    new Date(),
   );
-  const [color, setColor] = useState(AssignmentData.color);
-  const [reminder, setReminder] = useState(AssignmentData.reminder);
-  const [name, setName] = useState(AssignmentData.name);
-  const [description, setDescription] = useState(AssignmentData.description);
-  const [startTime, setStartTime] = useState(AssignmentData.start_time);
-  const [endTime, setEndTime] = useState(AssignmentData.end_time);
+  const [color, setColor] = useState<string>("");
+  const [reminder, setReminder] = useState<number>(0);
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const updatedAssignment: Assignment = {
-      id: AssignmentData.id,
+    const newAssignment: Assignment = {
+      id: 0, // corrected this in handle function 
       name: name,
       description: description,
       all_day: allDay,
@@ -68,7 +65,7 @@ export function EditAssignmentDialog({
       reminder: reminder,
     };
 
-    onConfirm(updatedAssignment);
+    onConfirm(newAssignment);
   }
 
   return (

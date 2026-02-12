@@ -29,7 +29,7 @@ export function LoginForm({
       setIsLoading(true);
       try {
         await login(codeResposne.code);
-        router.push("/dashboard");
+        router.push("/dashboard/upload");
       } catch {
         toast.error("Failed to login. Please try again or contact us.");
       } finally {

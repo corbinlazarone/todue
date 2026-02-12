@@ -38,7 +38,7 @@ func TestValidateDueDate(t *testing.T) {
 		},
 		{
 			name:    "valid due date, all day marked false",
-			wantErr: true,
+			wantErr: false,
 			Event: Event{
 				DueDate: "2025-12-10",
 				AllDay:  false,
@@ -46,7 +46,7 @@ func TestValidateDueDate(t *testing.T) {
 		},
 		{
 			name:    "invalid due date, all day marked false",
-			wantErr: false,
+			wantErr: true,
 			Event: Event{
 				DueDate: "",
 				AllDay:  false,
@@ -73,58 +73,58 @@ func TestValidateDueDate(t *testing.T) {
 func TestValidateDateTimes(t *testing.T) {
 	tests := []testEvent{
 		{
-			name:    "invalid start time - no timezone",
+			name:    "invalid start time format",
 			wantErr: true,
 			Event: Event{
-				StartTime: "2025-12-11T00:00:00",
-				EndTime:   "2025-12-11T01:00:00Z",
+				StartTime: "25:00",
+				EndTime:   "01:00",
 			},
 		},
 		{
-			name:    "valid start time with Z",
+			name:    "valid start time HH:MM",
 			wantErr: false,
 			Event: Event{
-				StartTime: "2025-12-11T00:00:00Z",
-				EndTime:   "2025-12-11T01:00:00Z",
+				StartTime: "00:00",
+				EndTime:   "01:00",
 			},
 		},
 		{
-			name:    "valid start time with offset",
+			name:    "valid start time HH:MM:SS",
 			wantErr: false,
 			Event: Event{
-				StartTime: "2025-12-11T00:00:00-06:00",
-				EndTime:   "2025-12-11T01:00:00-06:00",
+				StartTime: "00:00:00",
+				EndTime:   "01:00:00",
 			},
 		},
 		{
-			name:    "invalid end time - no timezone",
+			name:    "invalid end time format",
 			wantErr: true,
 			Event: Event{
-				StartTime: "2025-12-11T00:00:00Z",
-				EndTime:   "2025-12-11T00:00:00",
+				StartTime: "00:00",
+				EndTime:   "25:00",
 			},
 		},
 		{
-			name:    "valid end time with Z",
+			name:    "valid end time HH:MM",
 			wantErr: false,
 			Event: Event{
-				StartTime: "2025-12-11T00:00:00Z",
-				EndTime:   "2025-12-11T00:00:00Z",
+				StartTime: "00:00",
+				EndTime:   "00:00",
 			},
 		},
 		{
-			name:    "valid end time with offset",
+			name:    "valid end time HH:MM:SS",
 			wantErr: false,
 			Event: Event{
-				StartTime: "2025-12-11T00:00:00+05:30",
-				EndTime:   "2025-12-11T00:00:00+05:30",
+				StartTime: "00:00:00",
+				EndTime:   "00:00:00",
 			},
 		},
 		{
 			name:    "invalid blank end time",
 			wantErr: true,
 			Event: Event{
-				StartTime: "2025-12-11T00:00:00Z",
+				StartTime: "00:00",
 				EndTime:   "",
 			},
 		},
@@ -133,7 +133,7 @@ func TestValidateDateTimes(t *testing.T) {
 			wantErr: true,
 			Event: Event{
 				StartTime: "",
-				EndTime:   "2025-12-11T00:00:00Z",
+				EndTime:   "00:00",
 			},
 		},
 	}

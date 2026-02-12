@@ -99,7 +99,12 @@ func ToRFC3339(dateStr, timeStr, tzStr string) (string, error) {
 	}
 
 	datetime := dateStr + " " + timeStr
-	t, err := time.ParseInLocation("2006-01-02 15:04", datetime, loc)
+	var t time.Time
+	if strings.Contains(timeStr, ":") && len(strings.Split(timeStr, ":")) == 3 {
+		t, err = time.ParseInLocation("2006-01-02 15:04:05", datetime, loc)
+	} else {
+		t, err = time.ParseInLocation("2006-01-02 15:04", datetime, loc)
+	}
 	if err != nil {
 		return "", err
 	}

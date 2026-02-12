@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/corbinlazarone/todue/cmd/internals/models"
@@ -142,21 +143,24 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 }
 
 func addEventToCalendar(
+
 	ctx context.Context,
 	userModel *models.UserModel,
 	event *types.CalendarEvent,
 	allDay bool,
+
 ) error {
 
 	userID := ctx.Value("userID").(string)
 
 	user, err := userModel.GetByID(ctx, userID)
 	if err != nil {
+
 		return err
 	}
 
 	if user.GoogleRefreshToken == "" {
-		return errors.New("user's google refresh token is  or empty")
+		return errors.New("user's google refresh token is empty")
 	}
 
 	calendarSrv, err := services.GoogleCalendarService(
@@ -171,12 +175,18 @@ func addEventToCalendar(
 
 	var newEvent *calendar.Event
 
+	fmt.Printf("EVENT: %v\n", event)
+
 	if !allDay {
+
 		newEvent = &calendar.Event{
-			Summary:     event.Summary,
+			Summary: event.Summary,
+
 			Description: event.Description,
+
 			Start: &calendar.EventDateTime{
 				DateTime: event.Start.DateTime,
+
 				TimeZone: event.Start.TimeZone,
 			},
 			End: &calendar.EventDateTime{
@@ -185,13 +195,14 @@ func addEventToCalendar(
 			},
 			ColorId: ConvertToColorID(event.ColorId),
 			Reminders: &calendar.EventReminders{
-				UseDefault: event.Reminders.UseDefault,
+				UseDefault: false,
 				Overrides: []*calendar.EventReminder{
 					{
-						Method:  event.Reminders.Overrides[0].Method,
+						Method:  "email",
 						Minutes: int64(event.Reminders.Overrides[0].Minutes),
 					},
 				},
+				ForceSendFields: []string{"UseDefault"},
 			},
 		}
 	} else {
@@ -201,12 +212,20 @@ func addEventToCalendar(
 			Start: &calendar.EventDateTime{
 				Date: event.Start.Date,
 			},
+
 			End: &calendar.EventDateTime{
 				Date: event.End.Date,
 			},
 			ColorId: ConvertToColorID(event.ColorId),
 			Reminders: &calendar.EventReminders{
-				UseDefault: true,
+				UseDefault: false,
+				Overrides: []*calendar.EventReminder{
+					{
+						Method:  "email",
+						Minutes: int64(event.Reminders.Overrides[0].Minutes),
+					},
+				},
+				ForceSendFields: []string{"UseDefault"},
 			},
 		}
 	}

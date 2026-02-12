@@ -14,16 +14,20 @@ import {
 import { AlertCircle, Calendar, Clock, Edit2, Trash2 } from "lucide-react";
 import { ConfirmDialog } from "./confirm-dialog";
 import { EditAssignmentDialog } from "./edit-assignment-dialog";
+import { format, parseISO } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 export default function AssignmentCard({
   assignments,
+  timezone,
   onDelete,
   onEdit,
   syncErrors,
 }: {
   assignments: Assignment[];
+  timezone: string;
   onDelete(id: number): void;
-  onEdit(id: number): void;
+  onEdit(data: Assignment): void;
   syncErrors: EventError[] | null;
 }) {
   const formatDate = (date: string) => {
@@ -35,11 +39,15 @@ export default function AssignmentCard({
   };
 
   const formatTime = (time: string) => {
-    return new Date(`2000-01-01T${time}`).toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
+    if (!time) return "";
+    let date: Date;
+    if (time.includes("T")) {
+      date = parseISO(time);
+    } else {
+      date = new Date(`2000-01-01T${time}`);
+    }
+    const zonedDate = toZonedTime(date, timezone);
+    return format(zonedDate, "h:mm a");
   };
 
   const formatReminder = (minutes: number) => {
@@ -93,7 +101,7 @@ export default function AssignmentCard({
                   <div className="flex items-center space-x-0.5">
                     <EditAssignmentDialog
                       AssignmentData={assignment}
-                      onConfirm={() => onEdit(assignment.id)}
+                      onConfirm={(data) => onEdit(data)}
                       trigger={
                         <Button
                           variant="ghost"

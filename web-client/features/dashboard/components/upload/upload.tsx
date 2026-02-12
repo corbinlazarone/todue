@@ -3,7 +3,7 @@
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Card } from "@/shared/ui/card";
-import { Courses, EventError } from "../../types";
+import { Assignment, Courses, EventError } from "../../types";
 import { toast } from "sonner";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -15,10 +15,11 @@ import { useDashboard } from "../../context";
 import { FileText } from "lucide-react";
 
 import AssignmentCard from "./assingment-card";
+import { AddNewAssignmentDialog } from "./add-assignment-Dialog";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [userTimezone, setTimezone] = useState<string>();
+  const [userTimezone, setTimezone] = useState<string>("America/New_York");
   const [extractedCourseData, setExtractedCourseData] = useState<Courses>();
   const [disWhileExtract, setDisWhileExtract] = useState<boolean>(false);
   const [disBeforeExtract, setDisBeforeExtract] = useState<boolean>(true);
@@ -26,7 +27,8 @@ export function Upload() {
   const { setSidebarDisabled } = useDashboard();
 
   useEffect(() => {
-    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setTimezone(detectedTimezone);
   }, []);
 
   async function handleExtract() {
@@ -55,17 +57,17 @@ export function Upload() {
       toast.promise(courseDataPromise, {
         loading: "Uploading...",
         success: () => `${file.name} has been uploaded!`,
-        error: "Error",
       });
 
       const courseData = await courseDataPromise;
 
       setExtractedCourseData(courseData);
+
+      setDisBeforeExtract(false);
     } catch {
       toast.error("Failed to extract text from PDF. Try again or contact us.");
       return;
     } finally {
-      setDisBeforeExtract(false);
       setDisWhileExtract(false);
       setSidebarDisabled(false);
     }
@@ -96,6 +98,31 @@ export function Upload() {
     }
   }
 
+  function handleNewAssignment(data: Assignment) {
+    setExtractedCourseData((prev) => {
+      if (!prev || !prev.courses || prev.courses.length === 0) return prev;
+
+      const maxId = Math.max(
+        ...prev.courses.flatMap((c) => c.assignments.map((a) => a.id)),
+        0
+      );
+
+      const newAssignment = {
+        ...data,
+        id: maxId + 1,
+      };
+
+      return {
+        ...prev,
+        courses: prev.courses.map((course, index) =>
+          index === 0
+            ? { ...course, assignments: [...course.assignments, newAssignment] }
+            : course
+        ),
+      };
+    });
+  }
+
   function handleAssignmentDelete(id: number) {
     setExtractedCourseData((prev) => {
       if (!prev || !prev.courses || prev.courses.length === 0) return prev;
@@ -112,8 +139,20 @@ export function Upload() {
     });
   }
 
-  function handleAssignmentEdit() {
-    toast.info("Not Implemented yet");
+  function handleAssignmentEdit(data: Assignment) {
+    setExtractedCourseData((prev) => {
+      if (!prev || !prev.courses) return prev;
+
+      return {
+        ...prev,
+        courses: prev.courses.map((course) => ({
+          ...course,
+          assignments: course.assignments.map((assignment) =>
+            assignment.id === data.id ? data : assignment,
+          ),
+        })),
+      };
+    });
   }
 
   return (
@@ -150,8 +189,8 @@ export function Upload() {
 
       <div className="space-y-4">
         {extractedCourseData &&
-        extractedCourseData.courses &&
-        extractedCourseData.courses.length > 0 ? (
+          extractedCourseData.courses &&
+          extractedCourseData.courses.length > 0 ? (
           <>
             <div className="flex items-center justify-between">
               <div>
@@ -159,16 +198,21 @@ export function Upload() {
                   {extractedCourseData.courses[0].course_name}
                 </h2>
               </div>
-              <Button
-                variant="outline"
-                disabled={disBeforeExtract || disWhileExtract}
-                onClick={() => toast.info("Not implemented")}
-              >
-                Add new Assignment
-              </Button>
+              <AddNewAssignmentDialog
+                onConfirm={(data) => handleNewAssignment(data)}
+                trigger={
+                  <Button
+                    variant="outline"
+                    disabled={disBeforeExtract || disWhileExtract}
+                  >
+                    Add new Assignment
+                  </Button>
+                }
+              />
             </div>
             <AssignmentCard
               assignments={extractedCourseData.courses[0].assignments}
+              timezone={userTimezone}
               onDelete={handleAssignmentDelete}
               onEdit={handleAssignmentEdit}
               syncErrors={syncErrors}
