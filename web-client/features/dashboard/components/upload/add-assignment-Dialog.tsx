@@ -235,7 +235,7 @@ export function AddNewAssignmentDialog({
               </Select>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="mt-5">
             <DialogClose asChild>
               <Button variant="outline" type="button">
                 Cancel
