@@ -15,6 +15,7 @@ import { useDashboard } from "../../context";
 import { FileText } from "lucide-react";
 
 import AssignmentCard from "./assingment-card";
+import { AddNewAssignmentDialog } from "./add-assignment-Dialog";
 
 export function Upload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -97,6 +98,31 @@ export function Upload() {
     }
   }
 
+  function handleNewAssignment(data: Assignment) {
+    setExtractedCourseData((prev) => {
+      if (!prev || !prev.courses || prev.courses.length === 0) return prev;
+
+      const maxId = Math.max(
+        ...prev.courses.flatMap((c) => c.assignments.map((a) => a.id)),
+        0
+      );
+
+      const newAssignment = {
+        ...data,
+        id: maxId + 1,
+      };
+
+      return {
+        ...prev,
+        courses: prev.courses.map((course, index) =>
+          index === 0
+            ? { ...course, assignments: [...course.assignments, newAssignment] }
+            : course
+        ),
+      };
+    });
+  }
+
   function handleAssignmentDelete(id: number) {
     setExtractedCourseData((prev) => {
       if (!prev || !prev.courses || prev.courses.length === 0) return prev;
@@ -172,13 +198,17 @@ export function Upload() {
                   {extractedCourseData.courses[0].course_name}
                 </h2>
               </div>
-              <Button
-                variant="outline"
-                disabled={disBeforeExtract || disWhileExtract}
-                onClick={() => toast.info("Not implemented")}
-              >
-                Add new Assignment
-              </Button>
+              <AddNewAssignmentDialog
+                onConfirm={(data) => handleNewAssignment(data)}
+                trigger={
+                  <Button
+                    variant="outline"
+                    disabled={disBeforeExtract || disWhileExtract}
+                  >
+                    Add new Assignment
+                  </Button>
+                }
+              />
             </div>
             <AssignmentCard
               assignments={extractedCourseData.courses[0].assignments}
