@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/corbinlazarone/todue/cmd/internals/models"
@@ -20,8 +19,8 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 	var rep types.Response
 
 	type parameters struct {
-		UserTimeZone string       `json:"timezone"`
-		Courses      []CourseData `json:"courses"`
+		UserTimeZone string             `json:"timezone"`
+		Courses      []types.CourseData `json:"courses"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -139,23 +138,22 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 		}
 	}
 
+	// TODO: write course to database for history tab
+
 	rep.WriteSuccessResponse(w, "Course data has been inserted successfully", http.StatusOK)
 }
 
 func addEventToCalendar(
-
 	ctx context.Context,
 	userModel *models.UserModel,
 	event *types.CalendarEvent,
 	allDay bool,
-
 ) error {
 
 	userID := ctx.Value("userID").(string)
 
 	user, err := userModel.GetByID(ctx, userID)
 	if err != nil {
-
 		return err
 	}
 
@@ -174,8 +172,6 @@ func addEventToCalendar(
 	}
 
 	var newEvent *calendar.Event
-
-	fmt.Printf("EVENT: %v\n", event)
 
 	if !allDay {
 
@@ -233,6 +229,7 @@ func addEventToCalendar(
 	_, err = calendarSrv.Events.Insert("primary", newEvent).
 		Context(ctx).
 		Do()
+
 	if err != nil {
 		return err
 	}
