@@ -18,6 +18,7 @@ type application struct {
 	infoLog        *log.Logger
 	errLog         *log.Logger
 	users          *models.UserModel
+	courses        *models.CourseModel
 	opencodeClient *opencode.Client
 }
 
@@ -62,6 +63,7 @@ func main() {
 		infoLog:        infoLog,
 		errLog:         errLog,
 		users:          &models.UserModel{DB: dbPool},
+		courses:        &models.CourseModel{DB: dbPool},
 		opencodeClient: opencodeClient,
 	}
 

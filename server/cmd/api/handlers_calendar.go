@@ -14,6 +14,8 @@ import (
 )
 
 func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	defer r.Body.Close()
 
 	var rep types.Response
@@ -138,7 +140,22 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 		}
 	}
 
-	// TODO: write course to database for history tab
+	for _, val := range params.Courses {
+		id, err := app.courses.CreateNewCourseEntry(ctx, val.CourseID)
+		if err != nil {
+			app.errLog.Println(err)
+			rep.WriteErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")
+			return
+		}
+		for _, assVal := range val.Assignments {
+			err := app.courses.CreateNewAssignment(ctx, id, assVal)
+			if err != nil {
+				app.errLog.Println(err)
+				rep.WriteErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")
+				return
+			}
+		}
+	}
 
 	rep.WriteSuccessResponse(w, "Course data has been inserted successfully", http.StatusOK)
 }
@@ -174,7 +191,6 @@ func addEventToCalendar(
 	var newEvent *calendar.Event
 
 	if !allDay {
-
 		newEvent = &calendar.Event{
 			Summary: event.Summary,
 
