@@ -69,11 +69,11 @@ Do not infer or generate any data not directly present in the source text.`,
 {
   "courses": [
     {
-      "course_id": 1,
+      "course_id": "1",
       "course_name": "Course Name",
       "assignments": [
         {
-          "id": 1,
+          "id": "1",
           "name": "Assignment Name",
           "description": "Description",
           "due_date": "YYYY-MM-DD",

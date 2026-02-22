@@ -1,7 +1,7 @@
 package types
 
 type Assignment struct {
-	ID          int    `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	DueDate     string `json:"due_date"`
@@ -13,7 +13,7 @@ type Assignment struct {
 }
 
 type CourseData struct {
-	CourseID    int          `json:"course_id"`
+	CourseID    string       `json:"course_id"`
 	CourseName  string       `json:"course_name"`
 	Assignments []Assignment `json:"assignments"`
 }

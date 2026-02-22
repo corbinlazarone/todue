@@ -9,7 +9,7 @@ import (
 // Validator user's and AI's Google Calendar events.
 
 type Event struct {
-	AssignmentID   int    `json:"assignment_id"`
+	AssignmentID   string `json:"assignment_id"`
 	AssignmentName string `json:"assignment_name"`
 	DueDate        string `json:"due_date"`
 	AllDay         bool   `json:"all_day"`
@@ -20,7 +20,7 @@ type Event struct {
 }
 
 type EventError struct {
-	AssignmentID   int      `json:"assignment_id"`
+	AssignmentID   string   `json:"assignment_id"`
 	AssignmentName string   `json:"assignment_name"`
 	Errors         []string `json:"errors"`
 }

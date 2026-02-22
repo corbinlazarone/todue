@@ -141,7 +141,7 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 	}
 
 	for _, val := range params.Courses {
-		id, err := app.courses.CreateNewCourseEntry(ctx, val.CourseID)
+		id, err := app.courses.CreateNewCourseEntry(ctx, val.CourseName)
 		if err != nil {
 			app.errLog.Println(err)
 			rep.WriteErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")

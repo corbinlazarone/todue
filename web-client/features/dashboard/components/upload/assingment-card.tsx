@@ -26,7 +26,7 @@ export default function AssignmentCard({
 }: {
   assignments: Assignment[];
   timezone: string;
-  onDelete(id: number): void;
+  onDelete(id: string): void;
   onEdit(data: Assignment): void;
   syncErrors: EventError[] | null;
 }) {
@@ -73,7 +73,7 @@ export default function AssignmentCard({
       );
       return acc;
     },
-    {} as Record<number, string[]>,
+    {} as Record<string, string[]>,
   );
 
   return (

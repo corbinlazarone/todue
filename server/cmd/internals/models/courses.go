@@ -12,29 +12,26 @@ type CourseModel struct {
 }
 
 // Creates a course entry and returns the created UUID
-func (c *CourseModel) CreateNewCourseEntry(ctx context.Context, courseId int) (int, error) {
+func (c *CourseModel) CreateNewCourseEntry(ctx context.Context, courseName string) (string, error) {
 	statement := `INSERT INTO courses (course_name) VALUES ($1) RETURNING id`
 
-	// FIX: todue-server  | ERROR: 2026/02/17 19:56:33
-	// handlers_calendar.go:146: failed to encode args[0]: unable to encode 1 into text
-	// format for text (OID 25): cannot find encode plan
-	var id int
-	err := c.DB.QueryRow(ctx, statement, courseId).Scan(&id)
+	var id string
+	err := c.DB.QueryRow(ctx, statement, courseName).Scan(&id)
 
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	return id, nil
 }
 
 // Creates a new assignment for the course matching the provided course id
-func (c *CourseModel) CreateNewAssignment(ctx context.Context, courseId int, assignment types.Assignment) error {
+func (c *CourseModel) CreateNewAssignment(ctx context.Context, courseId string, assignment types.Assignment) error {
 	statement :=
-		`INSERT INTO assignment (
+		`INSERT INTO assignments (
 		course_id,
 		name,
-		descritpion,
+		description,
 		due_date,
 		all_day,
 		color,
@@ -53,7 +50,17 @@ func (c *CourseModel) CreateNewAssignment(ctx context.Context, courseId int, ass
 		$9
 	)`
 
-	_, err := c.DB.Exec(ctx, statement, courseId)
+	_, err := c.DB.Exec(ctx, statement,
+		courseId,
+		assignment.Name,
+		assignment.Description,
+		assignment.DueDate,
+		assignment.AllDay,
+		assignment.Color,
+		assignment.StartTime,
+		assignment.EndTime,
+		assignment.Reminder,
+	)
 
 	if err != nil {
 		return err
