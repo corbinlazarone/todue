@@ -26,7 +26,7 @@ type CalendarEvent struct {
 }
 
 type TimeConversionError struct {
-	AssignmentID   int      `json:"assignment_id"`
+	AssignmentID   string   `json:"assignment_id"`
 	AssignmentName string   `json:"assignment_name"`
 	Error          []string `json:"errors"`
 }

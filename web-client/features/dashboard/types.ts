@@ -1,5 +1,5 @@
 export type Assignment = {
-  id: number;
+  id: string;
   name: string;
   description: string;
   due_date: string;
@@ -11,7 +11,7 @@ export type Assignment = {
 };
 
 export type CourseData = {
-  course_id: number;
+  course_id: string;
   course_name: string;
   assignments: Assignment[];
 };

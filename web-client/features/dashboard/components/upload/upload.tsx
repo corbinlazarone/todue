@@ -102,14 +102,9 @@ export function Upload() {
     setExtractedCourseData((prev) => {
       if (!prev || !prev.courses || prev.courses.length === 0) return prev;
 
-      const maxId = Math.max(
-        ...prev.courses.flatMap((c) => c.assignments.map((a) => a.id)),
-        0
-      );
-
       const newAssignment = {
         ...data,
-        id: maxId + 1,
+        id: crypto.randomUUID(),
       };
 
       return {
@@ -123,7 +118,7 @@ export function Upload() {
     });
   }
 
-  function handleAssignmentDelete(id: number) {
+  function handleAssignmentDelete(id: string) {
     setExtractedCourseData((prev) => {
       if (!prev || !prev.courses || prev.courses.length === 0) return prev;
 

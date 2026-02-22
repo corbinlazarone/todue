@@ -54,7 +54,7 @@ export function AddNewAssignmentDialog({
     e.preventDefault();
 
     const newAssignment: Assignment = {
-      id: 0, // corrected this in handle function 
+      id: "", // corrected this in handle function 
       name: name,
       description: description,
       all_day: allDay,

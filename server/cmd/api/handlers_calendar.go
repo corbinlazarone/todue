@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/corbinlazarone/todue/cmd/internals/models"
@@ -15,13 +14,15 @@ import (
 )
 
 func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
 	defer r.Body.Close()
 
 	var rep types.Response
 
 	type parameters struct {
-		UserTimeZone string       `json:"timezone"`
-		Courses      []CourseData `json:"courses"`
+		UserTimeZone string             `json:"timezone"`
+		Courses      []types.CourseData `json:"courses"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -139,23 +140,37 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 		}
 	}
 
+	for _, val := range params.Courses {
+		id, err := app.courses.CreateNewCourseEntry(ctx, val.CourseName)
+		if err != nil {
+			app.errLog.Println(err)
+			rep.WriteErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")
+			return
+		}
+		for _, assVal := range val.Assignments {
+			err := app.courses.CreateNewAssignment(ctx, id, assVal)
+			if err != nil {
+				app.errLog.Println(err)
+				rep.WriteErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")
+				return
+			}
+		}
+	}
+
 	rep.WriteSuccessResponse(w, "Course data has been inserted successfully", http.StatusOK)
 }
 
 func addEventToCalendar(
-
 	ctx context.Context,
 	userModel *models.UserModel,
 	event *types.CalendarEvent,
 	allDay bool,
-
 ) error {
 
 	userID := ctx.Value("userID").(string)
 
 	user, err := userModel.GetByID(ctx, userID)
 	if err != nil {
-
 		return err
 	}
 
@@ -175,10 +190,7 @@ func addEventToCalendar(
 
 	var newEvent *calendar.Event
 
-	fmt.Printf("EVENT: %v\n", event)
-
 	if !allDay {
-
 		newEvent = &calendar.Event{
 			Summary: event.Summary,
 
@@ -233,6 +245,7 @@ func addEventToCalendar(
 	_, err = calendarSrv.Events.Insert("primary", newEvent).
 		Context(ctx).
 		Do()
+
 	if err != nil {
 		return err
 	}
