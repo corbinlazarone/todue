@@ -25,6 +25,13 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 		Courses      []types.CourseData `json:"courses"`
 	}
 
+	userID, ok := ctx.Value("userID").(string)
+	if !ok {
+		app.errLog.Println("USER ID NOT FOUND IN REQUEST CONTEXT")
+		rep.WriteErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")
+		return
+	}
+
 	decoder := json.NewDecoder(r.Body)
 	params := parameters{}
 
@@ -141,7 +148,7 @@ func (app *application) insertCourseDataHandler(w http.ResponseWriter, r *http.R
 	}
 
 	for _, val := range params.Courses {
-		id, err := app.courses.CreateNewCourseEntry(ctx, val.CourseName)
+		id, err := app.courses.CreateNewCourseEntry(ctx, val.CourseName, userID)
 		if err != nil {
 			app.errLog.Println(err)
 			rep.WriteErrorResponse(w, http.StatusInternalServerError, "Internal Server Error")
