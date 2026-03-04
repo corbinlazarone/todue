@@ -89,7 +89,7 @@ cd web-client && npm run dev
 - Frontend: http://localhost:3000
 - API: http://localhost:4000
 
-## Video
+## Demo Video
 
 [video-placeholder]
 
