@@ -21,7 +21,7 @@ export default function History() {
   const [timezone, setTimezone] = useState<string>("America/New_York");
   const [expandedCourse, setExpandedCourse] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [courseHistory, setCourseHistory] = useState<CourseData[]>([]);
+  const [courseHistory, setCourseHistory] = useState<CourseData[] | null>(null);
 
   useEffect(() => {
     const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -95,7 +95,7 @@ export default function History() {
             </Card>
           ))}
         </div>
-      ) : courseHistory.length === 0 ? (
+      ) : !courseHistory || courseHistory.length === 0 ? (
         <Card className="flex flex-col items-center justify-center p-8">
           <FileText className="h-12 w-12 text-muted-foreground mb-3" />
           <h3 className="text-lg font-medium mb-1">No Upload History</h3>
