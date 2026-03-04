@@ -2,11 +2,11 @@
   "timezone": "UTC",
   "courses": [
     {
-      "course_id": 1,
+      "course_id": "1",
       "course_name": "BIOL 1001: General Biology",
       "assignments": [
         {
-          "id": 1,
+          "id": "1",
           "name": "Exam 1",
           "description": "Chapters 1-5",
           "due_date": "2025-12-18",
@@ -17,7 +17,7 @@
           "reminder": 1440
         },
         {
-          "id": 2,
+          "id": "2",
           "name": "Exam 2",
           "description": "Chapters 6-10",
           "due_date": "2025-12-19",
@@ -28,7 +28,7 @@
           "reminder": 1440
         },
         {
-          "id": 3,
+          "id": "3",
           "name": "Final Exam",
           "description": "Chapters 12, 27, 29, 31",
           "due_date": "2025-12-20",
