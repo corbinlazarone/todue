@@ -91,7 +91,7 @@ cd web-client && npm run dev
 
 ## Image 
 
-[video-placeholder]
+https://github.com/user-attachments/assets/a4e6d046-07c6-413c-8123-9fe103e55aad
 
 ## License
 
