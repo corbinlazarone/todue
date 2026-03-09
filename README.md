@@ -91,7 +91,7 @@ cd web-client && npm run dev
 
 ## Image 
 
-https://github.com/user-attachments/assets/a4e6d046-07c6-413c-8123-9fe103e55aad
+<img width="1875" height="942" alt="Image" src="https://github.com/user-attachments/assets/a4e6d046-07c6-413c-8123-9fe103e55aad" />
 
 ## License
 
