@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
-import { Field, FieldDescription, FieldGroup } from "@/shared/ui/field";
+import { Field, FieldGroup } from "@/shared/ui/field";
 import { useGoogleLogin } from "@react-oauth/google";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
